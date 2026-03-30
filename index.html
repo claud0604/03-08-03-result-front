@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosis Results | APL COLOR</title>
+    <script>if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; } window.scrollTo(0, 0);</script>
+    <meta name="description" content="APL COLOR Personal Color & Style Diagnosis Results">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=DM+Mono:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Intro Overlay -->
+    <div class="intro-overlay" id="introOverlay">
+        <img src="assets/logo_nobg.png" alt="APL COLOR" class="intro-logo">
+    </div>
+
+    <!-- Login Section -->
+    <div class="login-section" id="loginSection" style="display:none;">
+        <div class="login-card">
+            <img src="assets/logo_nobg.png" alt="APL COLOR" class="login-logo">
+            <h2 class="login-title" data-i18n="res_verify_title">View Your Diagnosis Results</h2>
+            <p class="login-desc" id="loginDesc" data-i18n="res_verify_subtitle">Please verify your identity to view results.</p>
+
+            <!-- Language & Theme Selector -->
+            <div class="lang-selector">
+                <label data-i18n="res_lang_label">Language</label>
+                <select id="langSelect" onchange="setLang(this.value)">
+                    <option value="en">English</option>
+                    <option value="ko">한국어</option>
+                    <option value="ja">日本語</option>
+                    <option value="zh">中文</option>
+                </select>
+                <button class="theme-toggle-btn" id="themeToggleLogin" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <span class="theme-icon-sun">&#9788;</span>
+                    <span class="theme-icon-moon">&#9790;</span>
+                </button>
+            </div>
+
+            <form class="login-form" id="loginForm" onsubmit="handleVerify(event)">
+                <!-- Customer ID (shown only when no ?id= in URL) -->
+                <div class="login-field" id="customerIdField" style="display:none;">
+                    <label class="login-label" data-i18n="res_customer_id">Customer ID</label>
+                    <input type="text" id="inputCustomerId" class="login-input" data-i18n-placeholder="res_customer_id_ph" placeholder="Enter your customer ID">
+                </div>
+                <!-- Phone Last 4 -->
+                <div class="login-field">
+                    <label class="login-label" data-i18n="res_phone_last4">Last 4 digits of phone number</label>
+                    <input type="tel" id="inputPhoneLast4" class="login-input" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" data-i18n-placeholder="res_phone_last4_ph" placeholder="0000" required>
+                </div>
+                <p class="login-error" id="loginError"></p>
+                <button type="submit" class="login-btn" id="loginBtn" data-i18n="res_verify_btn">Verify</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Container -->
+    <div class="result-container" id="resultContainer" style="display:none;">
+
+        <!-- Logo -->
+        <div class="prev-logo-intro">
+            <img id="res_logoImg" alt="APL COLOR" class="prev-logo-img">
+        </div>
+        <!-- Header -->
+        <div class="prev-header">
+            <h1 class="prev-logo-text">APLCOLOR</h1>
+        </div>
+        <!-- Main Illustration -->
+        <div class="prev-main-illust">
+            <img id="res_mainIllustImg" alt="Main Illustration" class="prev-illust-img">
+        </div>
+        <!-- Customer Name + Navigation -->
+        <div class="prev-nav-section">
+            <h2 class="prev-customer-title"><span id="res_customerName"></span><span data-i18n="res_report_title">'s Diagnosis Report</span></h2>
+            <div class="prev-nav-buttons">
+                <span class="prev-nav-btn" onclick="scrollToSection('res_sec_color')" data-i18n="res_nav_color">Color</span>
+                <span class="prev-nav-btn" onclick="scrollToSection('res_sec_face')" data-i18n="res_nav_face">Face</span>
+                <span class="prev-nav-btn" onclick="scrollToSection('res_sec_body')" data-i18n="res_nav_body">Body</span>
+                <span class="prev-nav-btn" onclick="scrollToSection('res_sec_styling')" data-i18n="res_nav_style">Style</span>
+            </div>
+        </div>
+
+        <!-- ===== Personal Color Analysis ===== -->
+        <div class="prev-section-title" id="res_sec_color">
+            <h2 class="prev-sec-h2" data-i18n="res_sec_color_title">Personal Color Analysis</h2>
+            <p class="prev-sec-sub" data-i18n="res_sec_color_sub">Personalcolor</p>
+        </div>
+        <div class="prev-face-photos">
+            <div class="prev-face-photo">
+                <div class="prev-photo-box" id="res_facePhotoFront"><span data-i18n="res_photo_front">Front</span></div>
+                <p class="prev-photo-label" data-i18n="res_photo_front">Front</p>
+            </div>
+            <div class="prev-face-photo">
+                <div class="prev-photo-box" id="res_facePhotoSide"><span data-i18n="res_photo_side">Side</span></div>
+                <p class="prev-photo-label" data-i18n="res_photo_side">Side</p>
+            </div>
+        </div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_color_diag">Color Diagnosis</h3>
+            <p class="prev-mid-sub" data-i18n="res_color_diag_sub">Color Diagnosis</p>
+        </div>
+        <div class="prev-color-diag">
+            <div class="prev-diag-item">
+                <p class="prev-diag-title" data-i18n="res_temperature">Temperature</p>
+                <div class="prev-chips-row" id="res_tempChips">
+                    <div class="prev-chip-item" data-value="warm"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#c94a4a,#d4736a);"></div><span class="prev-chip-lbl">Warm</span></div>
+                    <div class="prev-chip-item" data-value="warm_neutral"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#d4736a,#e09c8a);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="neutral"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#e09c8a,#d4b8b8);"></div><span class="prev-chip-lbl">Neutral</span></div>
+                    <div class="prev-chip-item" data-value="cool_neutral"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#c9a8b8,#b898a8);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="cool"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#b898a8,#9878a8);"></div><span class="prev-chip-lbl">Cool</span></div>
+                </div>
+            </div>
+            <div class="prev-diag-item">
+                <p class="prev-diag-title" data-i18n="res_brightness">Brightness</p>
+                <div class="prev-chips-row" id="res_valueChips">
+                    <div class="prev-chip-item" data-value="light"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#f5f0eb,#e8e3de);"></div><span class="prev-chip-lbl">Light</span></div>
+                    <div class="prev-chip-item" data-value="light_medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#e0d5ca,#d5cab8);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#c9baa8,#b8a898);"></div><span class="prev-chip-lbl">Medium</span></div>
+                    <div class="prev-chip-item" data-value="dark_medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#a89888,#988878);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="dark"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#887868,#685848);"></div><span class="prev-chip-lbl">Dark</span></div>
+                </div>
+            </div>
+            <div class="prev-diag-item">
+                <p class="prev-diag-title" data-i18n="res_saturation">Saturation</p>
+                <div class="prev-chips-row" id="res_chromaChips">
+                    <div class="prev-chip-item" data-value="soft"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#d8c8a0,#c8b890);"></div><span class="prev-chip-lbl">Soft</span></div>
+                    <div class="prev-chip-item" data-value="soft_medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#e0c870,#d4b850);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#e8c840,#dab830);"></div><span class="prev-chip-lbl">Medium</span></div>
+                    <div class="prev-chip-item" data-value="vivid_medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#f0c020,#e0b010);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="vivid"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#f8b800,#e8a800);"></div><span class="prev-chip-lbl">Vivid</span></div>
+                </div>
+            </div>
+            <div class="prev-diag-item">
+                <p class="prev-diag-title" data-i18n="res_clarity">Clarity</p>
+                <div class="prev-chips-row" id="res_clarityChips">
+                    <div class="prev-chip-item" data-value="muted"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#607860,#506850);"></div><span class="prev-chip-lbl">Muted</span></div>
+                    <div class="prev-chip-item" data-value="muted_medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#689068,#588858);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#70a070,#609860);"></div><span class="prev-chip-lbl">Medium</span></div>
+                    <div class="prev-chip-item" data-value="clear_medium"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#78b878,#68a868);"></div><span class="prev-chip-lbl"></span></div>
+                    <div class="prev-chip-item" data-value="clear"><div class="prev-chip-swatch" style="background:linear-gradient(135deg,#80c880,#70b870);"></div><span class="prev-chip-lbl">Clear</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_analysis_result">Analysis Result</h3>
+            <p class="prev-mid-sub">Analysis Result</p>
+        </div>
+        <div class="prev-analysis-result">
+            <div class="prev-color-type-box" id="res_colorType"></div>
+            <img class="prev-palette-img" id="res_paletteImg" style="display:none;" alt="Palette">
+        </div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_tone_color">Tone &amp; Color</h3>
+            <p class="prev-mid-sub">Tone &amp; Color</p>
+        </div>
+        <div class="prev-block">
+            <div class="prev-tone-chart" id="res_toneChart">
+                <img id="res_toneTableImg" class="prev-full-img" alt="Tone Chart">
+            </div>
+        </div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_best_worst">Best &amp; Worst Color</h3>
+            <p class="prev-mid-sub">Best &amp; Worst Color</p>
+        </div>
+        <div class="prev-color-sets">
+            <div class="prev-color-set-item">
+                <p class="prev-color-set-label" data-i18n="res_best_color">Best Color</p>
+                <div class="prev-color-swatches" id="res_bestColorSet"></div>
+            </div>
+            <div class="prev-color-set-item">
+                <p class="prev-color-set-label" data-i18n="res_worst_color">Worst Color</p>
+                <div class="prev-color-swatches" id="res_worstColorSet"></div>
+            </div>
+        </div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_contrast">Contrast Color</h3>
+            <p class="prev-mid-sub">Contrast Color</p>
+        </div>
+        <div class="prev-block">
+            <p class="prev-contrast-desc" data-i18n="res_contrast_desc">Color contrast is based on the difference between skin tone and hair/eye color.</p>
+            <p class="prev-block-title" style="margin-top:10px;" data-i18n="res_face_contrast">Face Contrast</p>
+            <div class="prev-contrast-grid" id="res_faceContrastGrid">
+                <div class="prev-contrast-level" data-level="low"><img class="prev-contrast-img" alt="Low"><span class="prev-contrast-label" data-i18n="res_low_contrast">Low</span><div class="prev-contrast-check">&#10003;</div></div>
+                <div class="prev-contrast-level" data-level="middle"><img class="prev-contrast-img" alt="Medium"><span class="prev-contrast-label" data-i18n="res_mid_contrast">Medium</span><div class="prev-contrast-check">&#10003;</div></div>
+                <div class="prev-contrast-level" data-level="high"><img class="prev-contrast-img" alt="High"><span class="prev-contrast-label" data-i18n="res_high_contrast">High</span><div class="prev-contrast-check">&#10003;</div></div>
+            </div>
+            <p class="prev-block-title" style="margin-top:10px;" data-i18n="res_fashion_contrast">Fashion Contrast</p>
+            <div class="prev-contrast-grid" id="res_fashionContrastGrid">
+                <div class="prev-contrast-level" data-level="low"><img class="prev-contrast-img" alt="Low"><span class="prev-contrast-label" data-i18n="res_low_contrast">Low</span><div class="prev-contrast-check">&#10003;</div></div>
+                <div class="prev-contrast-level" data-level="middle"><img class="prev-contrast-img" alt="Medium"><span class="prev-contrast-label" data-i18n="res_mid_contrast">Medium</span><div class="prev-contrast-check">&#10003;</div></div>
+                <div class="prev-contrast-level" data-level="high"><img class="prev-contrast-img" alt="High"><span class="prev-contrast-label" data-i18n="res_high_contrast">High</span><div class="prev-contrast-check">&#10003;</div></div>
+            </div>
+        </div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_color_example">Color Examples</h3>
+            <p class="prev-mid-sub">Color Example</p>
+        </div>
+        <div class="prev-block" id="res_colorExampleBlock"><div class="prev-slider" id="res_colorExampleSlider"></div></div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_makeup_muse">Makeup Muse</h3>
+            <p class="prev-mid-sub">Makeup Muse</p>
+        </div>
+        <div class="prev-block" id="res_museBlock">
+            <div class="prev-muse-img" id="res_museImg"></div>
+            <div class="prev-staff-comment-box" id="res_museCommentBox" style="display:none">
+                <p class="prev-staff-comment-label" data-i18n="res_staff_comment">Expert Comment</p>
+                <p class="prev-staff-comment-text" id="res_museComment"></p>
+            </div>
+        </div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_makeup_keyword">Makeup Color Keyword</h3>
+            <p class="prev-mid-sub">Makeup Color Keyword</p>
+        </div>
+        <div class="prev-block" id="res_shadowKeyBlock"><p class="prev-block-title" data-i18n="res_shadow_keyword">Shadow & Blush Color</p><div class="prev-slider" id="res_shadowKeySlider"></div></div>
+        <div class="prev-block" id="res_shadowProdBlock"><p class="prev-block-title" data-i18n="res_shadow_product">Shadow & Blush Products</p><div class="prev-slider" id="res_shadowProdSlider"></div></div>
+        <div class="prev-block" id="res_lipKeyBlock"><p class="prev-block-title" data-i18n="res_lip_keyword">Lip Color</p><div class="prev-slider" id="res_lipKeySlider"></div></div>
+        <div class="prev-block" id="res_lipProdBlock"><p class="prev-block-title" data-i18n="res_lip_product">Lip Products</p><div class="prev-slider" id="res_lipProdSlider"></div></div>
+        <div class="prev-mid-section">
+            <h3 class="prev-mid-h3" data-i18n="res_color_usage">Color Usage</h3>
+            <p class="prev-mid-sub">Color Usage</p>
+        </div>
+        <div class="prev-block" id="res_nailBlock"><p class="prev-block-title" data-i18n="res_nail_color">Nail Color</p><div class="prev-slider" id="res_nailSlider"></div></div>
+        <div class="prev-block" id="res_hairBlock"><p class="prev-block-title" data-i18n="res_hair_color">Hair Color</p><div class="prev-slider" id="res_hairSlider"></div></div>
+        <div class="prev-block" id="res_accColorBlock"><p class="prev-block-title" data-i18n="res_acc_color">Accessory Color</p><div class="prev-slider" id="res_accColorSlider"></div></div>
+
+        <!-- ===== Face Shape Analysis ===== -->
+        <div class="prev-section-title" id="res_sec_face">
+            <h2 class="prev-sec-h2" data-i18n="res_sec_face_title">Face Shape Analysis</h2>
+            <p class="prev-sec-sub" data-i18n="res_sec_face_sub">Face Shape</p>
+        </div>
+        <div class="prev-block">
+            <p class="prev-block-title" data-i18n="res_face_result">Analysis Result</p>
+            <div class="prev-compare-grid">
+                <div class="prev-compare-item">
+                    <p class="prev-compare-label" data-i18n="res_customer_face">Your Face</p>
+                    <div class="prev-photo-box" id="res_faceCustomerPhoto"></div>
+                </div>
+                <div class="prev-compare-item">
+                    <p class="prev-compare-label" data-i18n="res_face_analysis">Analysis</p>
+                    <div class="prev-photo-box" id="res_faceTypeImg"></div>
+                </div>
+            </div>
+            <p class="prev-result-type" id="res_faceTypeName"></p>
+        </div>
+        <div class="prev-block" id="res_eyebrowBlock">
+            <p class="prev-block-title" data-i18n="res_eyebrow">Recommended Eyebrow</p>
+            <div class="prev-compare-grid">
+                <div class="prev-compare-item">
+                    <p class="prev-compare-label" data-i18n="res_before">Before</p>
+                    <div class="prev-photo-box" id="res_eyebrowBefore"></div>
+                </div>
+                <div class="prev-compare-item">
+                    <p class="prev-compare-label" data-i18n="res_after">After</p>
+                    <div class="prev-photo-box" id="res_eyebrowAfter"></div>
+                </div>
+            </div>
+            <div class="prev-staff-comment-box" id="res_eyebrowCommentBox" style="display:none">
+                <p class="prev-staff-comment-label" data-i18n="res_staff_comment">Expert Comment</p>
+                <p class="prev-staff-comment-text" id="res_eyebrowComment"></p>
+            </div>
+        </div>
+        <div class="prev-block" id="res_makeupBlock"><p class="prev-block-title" data-i18n="res_rec_makeup">Recommended Makeup</p><div class="prev-slider" id="res_makeupSlider"></div></div>
+        <div class="prev-block" id="res_glassesBlock"><p class="prev-block-title" data-i18n="res_rec_glasses">Recommended Glasses</p><div class="prev-slider" id="res_glassesSlider"></div></div>
+        <div class="prev-block" id="res_accRecBlock"><p class="prev-block-title" data-i18n="res_rec_accessory">Recommended Accessories</p><div class="prev-slider" id="res_accRecSlider"></div></div>
+        <div class="prev-block" id="res_bangsBlock"><p class="prev-block-title" data-i18n="res_rec_bangs">Recommended Bangs</p><div class="prev-slider" id="res_bangsSlider"></div></div>
+        <div class="prev-block" id="res_backHairBlock"><p class="prev-block-title" data-i18n="res_rec_backhair">Recommended Back Hair</p><div class="prev-slider" id="res_backHairSlider"></div></div>
+        <div class="prev-block" id="res_hairstyleBlock"><p class="prev-block-title" data-i18n="res_rec_hairstyle">Recommended Hairstyle</p><div class="prev-slider" id="res_hairstyleSlider"></div></div>
+
+        <!-- ===== Body Type Analysis ===== -->
+        <div class="prev-section-title" id="res_sec_body">
+            <h2 class="prev-sec-h2" data-i18n="res_sec_body_title">Body Type Analysis</h2>
+            <p class="prev-sec-sub" data-i18n="res_sec_body_sub">Body</p>
+        </div>
+        <div class="prev-block">
+            <p class="prev-block-title"><span data-i18n="res_body_result">Analysis Result</span> <span id="res_bodySkeletonType"></span> / <span id="res_bodySilhouetteType"></span></p>
+            <div class="prev-face-photos">
+                <div class="prev-face-photo">
+                    <div class="prev-photo-box large" id="res_bodyFront"><span data-i18n="res_photo_front">Front</span></div>
+                    <p class="prev-photo-label" data-i18n="res_photo_front">Front</p>
+                </div>
+                <div class="prev-face-photo">
+                    <div class="prev-photo-box large" id="res_bodySide"><span data-i18n="res_photo_side">Side</span></div>
+                    <p class="prev-photo-label" data-i18n="res_photo_side">Side</p>
+                </div>
+            </div>
+            <div class="prev-staff-comment-box" id="res_bodyDescBox" style="display:none">
+                <p class="prev-staff-comment-label" data-i18n="res_staff_comment">Expert Comment</p>
+                <p class="prev-staff-comment-text" id="res_bodyDesc"></p>
+            </div>
+        </div>
+        <div class="prev-block" id="res_necklineBlock">
+            <p class="prev-block-title" data-i18n="res_neckline">Neckline</p>
+            <p class="prev-set-label best" data-i18n="res_best">Best</p><div class="prev-slider" id="res_bestNecklineSlider"></div>
+            <p class="prev-set-label worst" data-i18n="res_worst">Worst</p><div class="prev-slider" id="res_worstNecklineSlider"></div>
+            <p class="prev-reason" id="res_necklineReason"></p>
+        </div>
+        <div class="prev-block" id="res_collarBlock">
+            <p class="prev-block-title" data-i18n="res_collar">Collar Design</p>
+            <p class="prev-set-label best" data-i18n="res_best">Best</p><div class="prev-slider" id="res_bestCollarSlider"></div>
+            <p class="prev-set-label worst" data-i18n="res_worst">Worst</p><div class="prev-slider" id="res_worstCollarSlider"></div>
+            <p class="prev-reason" id="res_collarReason"></p>
+        </div>
+        <div class="prev-block" id="res_topsBlock">
+            <p class="prev-block-title" data-i18n="res_tops_design">Top Design</p>
+            <p class="prev-set-label best" data-i18n="res_best">Best</p><div class="prev-slider" id="res_bestTopSlider"></div>
+            <p class="prev-set-label worst" data-i18n="res_worst">Worst</p><div class="prev-slider" id="res_worstTopSlider"></div>
+            <p class="prev-reason" id="res_topsReason"></p>
+        </div>
+        <div class="prev-block" id="res_skirtBlock">
+            <p class="prev-block-title" data-i18n="res_skirt">Skirt Line</p>
+            <p class="prev-set-label best" data-i18n="res_best">Best</p><div class="prev-slider" id="res_bestSkirtSlider"></div>
+            <p class="prev-set-label worst" data-i18n="res_worst">Worst</p><div class="prev-slider" id="res_worstSkirtSlider"></div>
+            <p class="prev-reason" id="res_skirtReason"></p>
+        </div>
+        <div class="prev-block" id="res_pantsBlock">
+            <p class="prev-block-title" data-i18n="res_pants">Pants Line</p>
+            <p class="prev-set-label best" data-i18n="res_best">Best</p><div class="prev-slider" id="res_bestPantsSlider"></div>
+            <p class="prev-set-label worst" data-i18n="res_worst">Worst</p><div class="prev-slider" id="res_worstPantsSlider"></div>
+            <p class="prev-reason" id="res_pantsReason"></p>
+        </div>
+
+        <!-- ===== Styling ===== -->
+        <div class="prev-section-title" id="res_sec_styling">
+            <h2 class="prev-sec-h2" data-i18n="res_sec_style_title">Styling</h2>
+            <p class="prev-sec-sub" data-i18n="res_sec_style_sub">Styling</p>
+        </div>
+        <div class="prev-keyword-section">
+            <p class="prev-keyword-intro" data-i18n="res_keyword_intro">Your image keywords are</p>
+            <p class="prev-keyword-value" id="res_styleKeyword"></p>
+            <p class="prev-keyword-outro" data-i18n="res_keyword_outro"></p>
+        </div>
+        <div class="prev-block" id="res_outerBlock"><p class="prev-block-title" data-i18n="res_outer">Outerwear</p><div class="prev-slider" id="res_outerSlider"></div></div>
+        <div class="prev-block" id="res_topBlock"><p class="prev-block-title" data-i18n="res_top">Tops</p><div class="prev-slider" id="res_topSlider"></div></div>
+        <div class="prev-block" id="res_dressBlock"><p class="prev-block-title" data-i18n="res_dress">Dresses</p><div class="prev-slider" id="res_dressSlider"></div></div>
+        <div class="prev-block" id="res_bottomBlock"><p class="prev-block-title" data-i18n="res_bottom">Bottoms</p><div class="prev-slider" id="res_bottomSlider"></div></div>
+        <div class="prev-block" id="res_bagBlock"><p class="prev-block-title" data-i18n="res_bag">Bags</p><div class="prev-slider" id="res_bagSlider"></div></div>
+        <div class="prev-block" id="res_shoesBlock"><p class="prev-block-title" data-i18n="res_shoes">Shoes</p><div class="prev-slider" id="res_shoesSlider"></div></div>
+
+        <div style="height:80px;"></div>
+    </div><!-- /resultContainer -->
+
+    <!-- Floating Navigation -->
+    <div class="result-float-nav" id="resultFloatNav">
+        <div class="prev-float-menu" id="resultFloatMenu">
+            <button class="prev-float-btn" onclick="scrollToSection('top')" data-i18n="res_float_top">Top</button>
+            <div class="prev-float-divider"></div>
+            <button class="prev-float-btn" onclick="scrollToSection('res_sec_color')" data-i18n="res_float_color">Color</button>
+            <button class="prev-float-btn" onclick="scrollToSection('res_sec_face')" data-i18n="res_float_face">Face</button>
+            <button class="prev-float-btn" onclick="scrollToSection('res_sec_body')" data-i18n="res_float_body">Body</button>
+            <div class="prev-float-divider"></div>
+            <button class="prev-float-btn" onclick="scrollToSection('res_sec_styling')" data-i18n="res_float_style">Style</button>
+            <div class="prev-float-divider"></div>
+            <button class="prev-float-btn theme-float-btn" onclick="toggleTheme()">
+                <span class="theme-icon-sun">&#9788;</span>
+                <span class="theme-icon-moon">&#9790;</span>
+            </button>
+        </div>
+        <button class="prev-float-toggle" id="resultFloatToggle">&#8801;</button>
+    </div>
+
+    <script src="common/constants.js"></script>
+    <script src="i18n.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
