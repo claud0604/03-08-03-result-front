@@ -109,6 +109,11 @@ var translations = {
         res_float_body: 'Body',
         res_float_style: 'Style',
 
+        // Tone legend
+        tone_main: 'Main',
+        tone_sub: 'Sub',
+        tone_point: 'Point',
+
         // Misc
         res_no_photo: 'No photo',
         res_no_image: 'No image',
@@ -215,6 +220,10 @@ var translations = {
         res_float_body: '체형',
         res_float_style: '스타일',
 
+        tone_main: '메인',
+        tone_sub: '서브',
+        tone_point: '포인트',
+
         res_no_photo: '사진 없음',
         res_no_image: '이미지 없음',
         res_lang_label: '언어'
@@ -320,6 +329,10 @@ var translations = {
         res_float_body: '体型',
         res_float_style: 'スタイル',
 
+        tone_main: 'メイン',
+        tone_sub: 'サブ',
+        tone_point: 'ポイント',
+
         res_no_photo: '写真なし',
         res_no_image: '画像なし',
         res_lang_label: '言語'
@@ -424,6 +437,10 @@ var translations = {
         res_float_face: '脸型',
         res_float_body: '体型',
         res_float_style: '风格',
+
+        tone_main: '主色调',
+        tone_sub: '辅助色调',
+        tone_point: '点缀色调',
 
         res_no_photo: '无照片',
         res_no_image: '无图片',

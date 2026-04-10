@@ -186,16 +186,27 @@ body {
 /* ========== Tone Chart ========== */
 .prev-block { padding: 10px 20px; margin-bottom: 8px; }
 .prev-block-title { font-size: 13px; font-weight: 600; color: var(--primary-color); margin-bottom: 10px; }
-.prev-tone-chart { position: relative; }
-.prev-full-img { width: 100%; border-radius: 8px; }
+.prev-tone-chart { position: relative; max-width: 480px; margin: 0 auto; }
+.prev-full-img { width: 100%; display: block; border-radius: 8px; }
 .prev-tone-marker {
     position: absolute; width: 91px; height: 91px; border-radius: 50%;
     transform: translate(-50%, -50%); z-index: 2;
-    background: transparent;
+    background: transparent; pointer-events: none;
 }
 .prev-tone-marker-main { border: 3px solid #e63946; box-shadow: 0 0 12px 4px rgba(230,57,70,0.5); }
 .prev-tone-marker-sub { border: 2px solid #457b9d; box-shadow: 0 0 8px 3px rgba(69,123,157,0.4); }
 .prev-tone-marker-point { border: 2px dashed #2a9d8f; box-shadow: 0 0 8px 3px rgba(42,157,143,0.4); }
+.prev-tone-legend {
+    display: flex; gap: 16px; justify-content: center;
+    margin-top: 10px; font-size: 11px; color: var(--secondary-color);
+}
+.prev-tone-legend-item { display: flex; align-items: center; gap: 4px; }
+.prev-tone-legend-dot {
+    width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+}
+.prev-tone-legend-dot.main { border: 2px solid #e63946; }
+.prev-tone-legend-dot.sub { border: 2px solid #457b9d; }
+.prev-tone-legend-dot.point { border: 2px dashed #2a9d8f; }
 
 /* ========== Color Swatches ========== */
 .prev-color-sets { padding: 10px 20px; }

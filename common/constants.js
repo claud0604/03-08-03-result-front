@@ -16,18 +16,19 @@ var PRESET_API_BASE = 'https://facefree-control-api.apls.kr/api/presets';
 var EXPERT_API_BASE = 'https://api-030802-expert.apls.kr';
 
 // Tone chart marker positions (percentage-based)
+// Synced with Expert TONE_GRID coordinates
 var TONE_POSITIONS = {
-    'Wh':   { left: 18.25, top: 16.5 },
+    'Wh':   { left: 18.5,  top: 16.5 },
     'ltgy': { left: 18.25, top: 34 },
     'G':    { left: 18.25, top: 51.75 },
-    'dkgy': { left: 18.25, top: 69.25 },
-    'bk':   { left: 18.25, top: 86.75 },
-    'Pl':   { left: 39,    top: 26 },
+    'dkgy': { left: 18.25, top: 69.75 },
+    'bk':   { left: 18.25, top: 87.6 },
+    'Pl':   { left: 39,    top: 25.75 },
     'Sf':   { left: 39,    top: 43.5 },
-    'dl':   { left: 39,    top: 61 },
-    'dk':   { left: 39,    top: 78.75 },
+    'dl':   { left: 39,    top: 61.5 },
+    'dk':   { left: 39,    top: 79.25 },
     'Lt':   { left: 59.75, top: 33.25 },
     'basic':{ left: 59.75, top: 51.25 },
-    'Dp':   { left: 59.75, top: 69 },
+    'Dp':   { left: 59.75, top: 69.25 },
     'Vv':   { left: 80.5,  top: 51.5 }
 };

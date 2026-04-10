@@ -400,6 +400,10 @@ function renderToneMarkers(cd) {
     (tones.main || []).forEach(function(t) { createMarker(t, 'prev-tone-marker-main'); });
     (tones.sub || []).forEach(function(t) { createMarker(t, 'prev-tone-marker-sub'); });
     (tones.point || []).forEach(function(t) { createMarker(t, 'prev-tone-marker-point'); });
+
+    // Show/hide Point legend based on data
+    var pointLegend = document.querySelector('.prev-tone-legend-item[data-role="point"]');
+    if (pointLegend) pointLegend.style.display = (tones.point && tones.point.length > 0) ? '' : 'none';
 }
 
 function renderContrastGrid(gridId, selectedLevel, folder, genderFolder) {
