@@ -202,11 +202,11 @@ body {
 }
 .prev-tone-legend-item { display: flex; align-items: center; gap: 4px; }
 .prev-tone-legend-dot {
-    width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+    width: 12px; height: 12px; border-radius: 50%; display: inline-block;
 }
-.prev-tone-legend-dot.main { border: 2px solid #e63946; }
-.prev-tone-legend-dot.sub { border: 2px solid #457b9d; }
-.prev-tone-legend-dot.point { border: 2px dashed #2a9d8f; }
+.prev-tone-legend-dot.main { border: 2px solid #e63946; background: rgba(230,57,70,0.3); box-shadow: 0 0 4px rgba(230,57,70,0.5); }
+.prev-tone-legend-dot.sub { border: 2px solid #457b9d; background: rgba(69,123,157,0.3); box-shadow: 0 0 4px rgba(69,123,157,0.4); }
+.prev-tone-legend-dot.point { border: 2px dashed #2a9d8f; background: rgba(42,157,143,0.3); box-shadow: 0 0 4px rgba(42,157,143,0.4); }
 
 /* ========== Color Swatches ========== */
 .prev-color-sets { padding: 10px 20px; }
