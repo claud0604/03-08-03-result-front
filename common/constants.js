@@ -11,8 +11,8 @@ var API_CONFIG = {
     }
 };
 
-// 2nd gen control API (preset images still on GCS)
-var PRESET_API_BASE = 'https://facefree-control-api.apls.kr/api/presets';
+// R2 preset images via CDN
+var PRESET_API_BASE = 'https://cdn-r2.apls.kr/02-expert';
 var EXPERT_API_BASE = 'https://api-030802-expert.apls.kr';
 
 // Tone chart marker positions (percentage-based)

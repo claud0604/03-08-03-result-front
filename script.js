@@ -242,9 +242,9 @@ function renderResult(data) {
     // Customer name
     setText('res_customerName', data.customerInfo ? data.customerInfo.name : '');
 
-    // Face photos
-    setPhoto('res_facePhotoFront', resolveImg(photos.face ? photos.face.front : null));
-    setPhoto('res_facePhotoSide', resolveImg(photos.face ? photos.face.side : null));
+    // Face photos (above-the-fold → eager)
+    setPhoto('res_facePhotoFront', resolveImg(photos.face ? photos.face.front : null), true);
+    setPhoto('res_facePhotoSide', resolveImg(photos.face ? photos.face.side : null), true);
 
     // Color diagnosis chips
     setChipActive('res_tempChips', cd.indicators ? cd.indicators.temperature : '');
@@ -258,7 +258,7 @@ function renderResult(data) {
     if (paletteImg) {
         if (cd.type) {
             var paletteKey = cd.type.toLowerCase().replace(/_/g, '-');
-            paletteImg.src = 'https://storage.googleapis.com/02-expert/01-personalcolor-palette/' + genderFolder + '/' + paletteKey + '-panel.jpg';
+            paletteImg.src = 'https://cdn-r2.apls.kr/02-expert/01-personalcolor-palette/' + genderFolder + '/' + paletteKey + '-panel.jpg';
             paletteImg.style.display = '';
         } else { paletteImg.style.display = 'none'; }
     }
@@ -357,11 +357,12 @@ function setText(id, text) {
     if (el) el.textContent = text;
 }
 
-function setPhoto(id, url) {
+function setPhoto(id, url, eager) {
     var el = document.getElementById(id);
     if (!el) return;
+    var loadAttr = eager ? '' : ' loading="lazy"';
     if (url) {
-        el.innerHTML = '<img src="' + url + '" onerror="this.parentElement.innerHTML=\'<span style=color:#bbb;font-size:11px;>' + t('res_no_photo') + '</span>\'">';
+        el.innerHTML = '<img src="' + url + '"' + loadAttr + ' onerror="this.parentElement.innerHTML=\'<span style=color:#bbb;font-size:11px;>' + t('res_no_photo') + '</span>\'">';
     } else {
         el.innerHTML = '<span style="color:#bbb;font-size:11px;">' + t('res_no_photo') + '</span>';
     }
@@ -426,7 +427,7 @@ function setSlider(sliderId, blockId, urls) {
     if (block) block.style.display = hasData ? '' : 'none';
     if (hasData) {
         slider.innerHTML = urls.map(function(url) {
-            return '<div class="prev-slider-card"><img src="' + url + '" onerror="this.parentElement.style.display=\'none\'"></div>';
+            return '<div class="prev-slider-card"><img src="' + url + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>';
         }).join('');
     }
 }
@@ -437,7 +438,7 @@ function setMuse(imgId, commentId, blockId, imgUrl, comment) {
     if (block) block.style.display = hasData ? '' : 'none';
     if (hasData) {
         var imgEl = document.getElementById(imgId);
-        if (imgEl && imgUrl) imgEl.innerHTML = '<img src="' + imgUrl + '" onerror="this.parentElement.style.display=\'none\'">';
+        if (imgEl && imgUrl) imgEl.innerHTML = '<img src="' + imgUrl + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'">';
         setText(commentId, comment || '');
         var commentBox = document.getElementById('res_museCommentBox');
         if (commentBox) commentBox.style.display = comment ? '' : 'none';
@@ -456,8 +457,8 @@ function setBestWorst(blockId, bestId, worstId, reasonId, bestUrls, worstUrls, r
     if (hasData) {
         var bestSlider = document.getElementById(bestId);
         var worstSlider = document.getElementById(worstId);
-        if (bestSlider) bestSlider.innerHTML = (bestUrls || []).map(function(url) { return '<div class="prev-slider-card"><img src="' + url + '" onerror="this.parentElement.style.display=\'none\'"></div>'; }).join('');
-        if (worstSlider) worstSlider.innerHTML = (worstUrls || []).map(function(url) { return '<div class="prev-slider-card"><img src="' + url + '" onerror="this.parentElement.style.display=\'none\'"></div>'; }).join('');
+        if (bestSlider) bestSlider.innerHTML = (bestUrls || []).map(function(url) { return '<div class="prev-slider-card"><img src="' + url + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>'; }).join('');
+        if (worstSlider) worstSlider.innerHTML = (worstUrls || []).map(function(url) { return '<div class="prev-slider-card"><img src="' + url + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>'; }).join('');
         setText(reasonId, reason || '');
     }
 }
