@@ -234,8 +234,7 @@ function renderResult(data) {
     // Logo + Main Illustration + Tone Table
     var logoImg = document.getElementById('res_logoImg');
     if (logoImg) logoImg.src = 'assets/logo_nobg.png';
-    var mainImg = document.getElementById('res_mainIllustImg');
-    if (mainImg) mainImg.src = 'assets/main-img.png';
+    // mainImg src is set directly in HTML for faster loading
     var toneTableImg = document.getElementById('res_toneTableImg');
     if (toneTableImg) toneTableImg.src = 'assets/tonetable.png';
 
