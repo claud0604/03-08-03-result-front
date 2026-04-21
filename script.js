@@ -292,6 +292,8 @@ function renderResult(data) {
     setMuse('res_museImg', 'res_museComment', 'res_museBlock', resolveImg(cd.makeupMuse ? cd.makeupMuse.imageUrl : null), cd.description || (cd.makeupMuse ? cd.makeupMuse.comment : ''));
     setSlider('res_shadowKeySlider', 'res_shadowKeyBlock', resolveImgArray(cd.makeup ? cd.makeup.shadowBlush : null));
     var catRecs = cd.catalogRecommendations || {};
+    console.log('[Render] catalogRecommendations:', JSON.stringify(catRecs));
+    console.log('[Render] productImages:', JSON.stringify(cd.productImages));
     setProductSlider('res_shadowProdSlider', 'res_shadowProdBlock', catRecs.shadowBlush, resolveImgArray(cd.productImages ? cd.productImages.shadowBlush : null));
     setSlider('res_lipKeySlider', 'res_lipKeyBlock', resolveImgArray(cd.makeup ? cd.makeup.lip : null));
     setProductSlider('res_lipProdSlider', 'res_lipProdBlock', catRecs.lip, resolveImgArray(cd.productImages ? cd.productImages.lip : null));
@@ -457,6 +459,9 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
     var block = document.getElementById(blockId);
     if (!slider) return;
 
+    console.log('[ProductSlider]', sliderId, 'catalog:', catalogItems ? catalogItems.length : 0, 'fallback:', fallbackUrls ? fallbackUrls.length : 0);
+    if (catalogItems && catalogItems.length > 0) console.log('[ProductSlider] sample:', JSON.stringify(catalogItems[0]));
+
     // Use catalogRecommendations if available, otherwise fallback to productImages
     if (catalogItems && catalogItems.length > 0) {
         if (block) block.style.display = '';
@@ -464,8 +469,11 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
             var imgUrl = resolveImg(item.imageUrl) || '';
             var brand = item.brand || '';
             var name = item.name || '';
+            var imgTag = imgUrl
+                ? '<img src="' + imgUrl + '" loading="lazy" onerror="this.style.display=\'none\'">'
+                : '<div class="prev-product-no-img"></div>';
             return '<div class="prev-product-card">' +
-                '<img src="' + imgUrl + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'">' +
+                imgTag +
                 (brand || name ? '<div class="prev-product-info">' +
                     (brand ? '<span class="prev-product-brand">' + brand + '</span>' : '') +
                     (name ? '<span class="prev-product-name">' + name + '</span>' : '') +
