@@ -221,6 +221,20 @@ function resolveImgArray(arr) {
     return (arr || []).map(resolveImg).filter(Boolean);
 }
 
+// ========== Eyebrow Style Label ==========
+var EYEBROW_STYLE_LABELS = {
+    round: { en: 'Round', ko: '라운드', ja: 'ラウンド', zh: '圆弧' },
+    ascending: { en: 'Ascending', ko: '상승형', ja: 'アセンディング', zh: '上扬' },
+    semi_arch: { en: 'Semi Arch', ko: '세미 아치', ja: 'セミアーチ', zh: '半弧' },
+    arch: { en: 'Arch', ko: '아치', ja: 'アーチ', zh: '弧形' },
+    straight: { en: 'Straight', ko: '스트레이트', ja: 'ストレート', zh: '平直' }
+};
+function getEyebrowLabel(code) {
+    var lang = getCurrentLang();
+    var entry = EYEBROW_STYLE_LABELS[code];
+    return entry ? (entry[lang] || entry.en) : code;
+}
+
 // ========== Render Result ==========
 function renderResult(data) {
     var cd = data.colorDiagnosis || {};
@@ -311,9 +325,11 @@ function renderResult(data) {
     setPhoto('res_eyebrowBefore', resolveImg(photos.face ? photos.face.front : null));
     setPhoto('res_eyebrowAfter', resolveImg(fa.eyebrow ? fa.eyebrow.afterImageUrl : null));
     setText('res_eyebrowComment', fa.eyebrow ? fa.eyebrow.comment || '' : '');
+    var eyebrowStyleName = (fa.eyebrow && fa.eyebrow.style) ? getEyebrowLabel(fa.eyebrow.style) : '';
+    setText('res_eyebrowStyleName', eyebrowStyleName);
     var eyebrowCommentBox = document.getElementById('res_eyebrowCommentBox');
     if (eyebrowCommentBox) eyebrowCommentBox.style.display = (fa.eyebrow && fa.eyebrow.comment) ? '' : 'none';
-    toggleBlock('res_eyebrowBlock', !!(fa.eyebrow && (fa.eyebrow.afterImageUrl || fa.eyebrow.comment)));
+    toggleBlock('res_eyebrowBlock', !!(fa.eyebrow && (fa.eyebrow.afterImageUrl || fa.eyebrow.comment || fa.eyebrow.style)));
 
     // Face rec sliders
     setSlider('res_makeupSlider', 'res_makeupBlock', resolveImgArray(fa.makeupRec || fa.makeupExamples));
@@ -335,6 +351,10 @@ function renderResult(data) {
     setBestWorst('res_necklineBlock', 'res_bestNecklineSlider', 'res_worstNecklineSlider', 'res_necklineReason', resolveImgArray(ba.bestNecklines), resolveImgArray(ba.worstNecklines), ba.necklineComment);
     setBestWorst('res_collarBlock', 'res_bestCollarSlider', 'res_worstCollarSlider', 'res_collarReason', resolveImgArray(ba.bestCollars), resolveImgArray(ba.worstCollars), ba.collarComment);
     setBestWorst('res_topsBlock', 'res_bestTopSlider', 'res_worstTopSlider', 'res_topsReason', resolveImgArray(ba.bestTopss), resolveImgArray(ba.worstTopss), ba.topsComment);
+    // Skirt Length comment
+    setText('res_skirtLengthComment', ba.skirtLengthComment || '');
+    toggleBlock('res_skirtLengthBlock', !!ba.skirtLengthComment);
+
     setBestWorst('res_skirtBlock', 'res_bestSkirtSlider', 'res_worstSkirtSlider', 'res_skirtReason', resolveImgArray(ba.bestSkirts), resolveImgArray(ba.worstSkirts), ba.skirtComment);
     setBestWorst('res_pantsBlock', 'res_bestPantsSlider', 'res_worstPantsSlider', 'res_pantsReason', resolveImgArray(ba.bestPantss), resolveImgArray(ba.worstPantss), ba.pantsComment);
 
