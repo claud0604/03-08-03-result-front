@@ -291,9 +291,10 @@ function renderResult(data) {
     setSlider('res_colorExampleSlider', 'res_colorExampleBlock', resolveImgArray(cd.colorExamples));
     setMuse('res_museImg', 'res_museComment', 'res_museBlock', resolveImg(cd.makeupMuse ? cd.makeupMuse.imageUrl : null), cd.description || (cd.makeupMuse ? cd.makeupMuse.comment : ''));
     setSlider('res_shadowKeySlider', 'res_shadowKeyBlock', resolveImgArray(cd.makeup ? cd.makeup.shadowBlush : null));
-    setSlider('res_shadowProdSlider', 'res_shadowProdBlock', resolveImgArray(cd.productImages ? cd.productImages.shadowBlush : null));
+    var catRecs = cd.catalogRecommendations || {};
+    setProductSlider('res_shadowProdSlider', 'res_shadowProdBlock', catRecs.shadowBlush, resolveImgArray(cd.productImages ? cd.productImages.shadowBlush : null));
     setSlider('res_lipKeySlider', 'res_lipKeyBlock', resolveImgArray(cd.makeup ? cd.makeup.lip : null));
-    setSlider('res_lipProdSlider', 'res_lipProdBlock', resolveImgArray(cd.productImages ? cd.productImages.lip : null));
+    setProductSlider('res_lipProdSlider', 'res_lipProdBlock', catRecs.lip, resolveImgArray(cd.productImages ? cd.productImages.lip : null));
     setSlider('res_nailSlider', 'res_nailBlock', resolveImgArray(cd.colorUsage ? cd.colorUsage.nail : null));
     setSlider('res_hairSlider', 'res_hairBlock', resolveImgArray(cd.colorUsage ? cd.colorUsage.hair : null));
     setSlider('res_accColorSlider', 'res_accColorBlock', resolveImgArray(cd.colorUsage ? cd.colorUsage.accessory : null));
@@ -448,6 +449,36 @@ function setSlider(sliderId, blockId, urls) {
         slider.innerHTML = urls.map(function(url) {
             return '<div class="prev-slider-card"><img src="' + url + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>';
         }).join('');
+    }
+}
+
+function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
+    var slider = document.getElementById(sliderId);
+    var block = document.getElementById(blockId);
+    if (!slider) return;
+
+    // Use catalogRecommendations if available, otherwise fallback to productImages
+    if (catalogItems && catalogItems.length > 0) {
+        if (block) block.style.display = '';
+        slider.innerHTML = catalogItems.map(function(item) {
+            var imgUrl = resolveImg(item.imageUrl) || '';
+            var brand = item.brand || '';
+            var name = item.name || '';
+            return '<div class="prev-product-card">' +
+                '<img src="' + imgUrl + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'">' +
+                (brand || name ? '<div class="prev-product-info">' +
+                    (brand ? '<span class="prev-product-brand">' + brand + '</span>' : '') +
+                    (name ? '<span class="prev-product-name">' + name + '</span>' : '') +
+                '</div>' : '') +
+            '</div>';
+        }).join('');
+    } else if (fallbackUrls && fallbackUrls.length > 0) {
+        if (block) block.style.display = '';
+        slider.innerHTML = fallbackUrls.map(function(url) {
+            return '<div class="prev-slider-card"><img src="' + url + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>';
+        }).join('');
+    } else {
+        if (block) block.style.display = 'none';
     }
 }
 

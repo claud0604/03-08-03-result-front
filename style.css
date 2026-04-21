@@ -262,6 +262,21 @@ body {
 .prev-slider-card img { width: 100%; height: 100%; object-fit: cover; }
 .prev-slider-empty { color: #bbb; font-size: 12px; padding: 20px; text-align: center; }
 
+/* ========== Product Card ========== */
+.prev-product-card {
+    flex: 0 0 130px; border-radius: 10px; overflow: hidden;
+    background: var(--bg-color); border: 1px solid var(--border-color);
+}
+.prev-product-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.prev-product-info { padding: 6px 8px; }
+.prev-product-brand { display: block; font-size: 10px; color: var(--text-dim); line-height: 1.3; }
+.prev-product-name {
+    display: block; font-size: 11px; color: var(--primary-color);
+    line-height: 1.3; margin-top: 2px;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+
 /* ========== Muse ========== */
 .prev-muse-img { width: 100%; border-radius: 12px; overflow: hidden; background: var(--bg-color); min-height: 100px; }
 .prev-muse-img img { width: 100%; display: block; }
