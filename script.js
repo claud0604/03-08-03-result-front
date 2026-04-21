@@ -479,6 +479,8 @@ function setBestWorst(blockId, bestId, worstId, reasonId, bestUrls, worstUrls, r
         if (bestSlider) bestSlider.innerHTML = (bestUrls || []).map(function(url) { return '<div class="prev-slider-card"><img src="' + url + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>'; }).join('');
         if (worstSlider) worstSlider.innerHTML = (worstUrls || []).map(function(url) { return '<div class="prev-slider-card"><img src="' + url + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>'; }).join('');
         setText(reasonId, reason || '');
+        var reasonBox = document.getElementById(reasonId + 'Box');
+        if (reasonBox) reasonBox.style.display = reason ? '' : 'none';
     }
 }
 
