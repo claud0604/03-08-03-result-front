@@ -153,9 +153,19 @@ body {
 .prev-sec-sub { font-size: 12px; color: #aaa; margin-top: 8px; letter-spacing: 1px; }
 
 /* ========== Mid Section ========== */
-.prev-mid-section { padding: 25px 20px 8px; text-align: center; }
-.prev-mid-h3 { font-size: 15px; font-weight: 600; color: var(--primary-color); }
-.prev-mid-sub { font-size: 11px; color: #bbb; margin-top: 2px; }
+.prev-mid-section { padding: 25px 20px 10px; text-align: center; }
+.prev-mid-h3 {
+    font-size: 15px; font-weight: 600; color: var(--primary-color);
+    display: inline-block; position: relative; padding: 0 16px;
+}
+.prev-mid-h3::before,
+.prev-mid-h3::after {
+    content: ''; position: absolute; top: 50%;
+    width: 20px; height: 1px; background: var(--accent-color); opacity: 0.5;
+}
+.prev-mid-h3::before { right: 100%; }
+.prev-mid-h3::after { left: 100%; }
+.prev-mid-sub { font-size: 11px; color: #bbb; margin-top: 3px; }
 
 /* ========== Face Photos ========== */
 .prev-face-photos { display: flex; gap: 12px; padding: 15px 20px; justify-content: center; }
