@@ -122,8 +122,6 @@ body {
 .prev-logo-img { max-width: 200px; height: auto; }
 .prev-header { padding: 10px 30px 20px; text-align: center; }
 .prev-logo-text { font-size: 18px; font-weight: 700; letter-spacing: 3px; color: var(--primary-color); }
-.prev-main-illust { display: flex; justify-content: center; padding: 10px 30px 20px; }
-.prev-illust-img { max-width: 250px; height: auto; }
 
 /* ========== Navigation ========== */
 .prev-nav-section { padding: 30px 20px; text-align: center; }
