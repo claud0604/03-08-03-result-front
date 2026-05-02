@@ -364,7 +364,7 @@ function renderResult(data) {
     toggleBlock('res_skirtLengthBlock', !!ba.skirtLengthComment);
 
     setBestWorst('res_skirtBlock', 'res_bestSkirtSlider', 'res_worstSkirtSlider', 'res_skirtReason', resolveImgArray(ba.bestSkirts), resolveImgArray(ba.worstSkirts), ba.skirtComment);
-    setBestWorst('res_pantsBlock', 'res_bestPantsSlider', 'res_worstPantsSlider', 'res_pantsReason', resolveImgArray(ba.bestPantss), resolveImgArray(ba.worstPantss), ba.pantsComment);
+    setBestWorst('res_pantsBlock', 'res_bestPantsSlider', 'res_worstPantsSlider', 'res_pantsReason', resolveImgArray(ba.bestPants), resolveImgArray(ba.worstPants), ba.pantsComment);
 
     // Styling
     setText('res_styleKeyword', st.keywords && st.keywords.length ? st.keywords.join(', ') : '');
