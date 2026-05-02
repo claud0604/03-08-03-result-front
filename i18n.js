@@ -515,8 +515,8 @@ function applyTranslations() {
     var dict = translations[lang] || translations.en;
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
         var key = el.getAttribute('data-i18n');
-        if (dict[key]) el.textContent = dict[key];
-        else if (translations.en[key]) el.textContent = translations.en[key];
+        if (key in dict) el.textContent = dict[key];
+        else if (key in translations.en) el.textContent = translations.en[key];
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
         var key = el.getAttribute('data-i18n-placeholder');
