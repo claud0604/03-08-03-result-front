@@ -358,7 +358,7 @@ function renderResult(data) {
 
     setBestWorst('res_necklineBlock', 'res_bestNecklineSlider', 'res_worstNecklineSlider', 'res_necklineReason', resolveImgArray(ba.bestNecklines), resolveImgArray(ba.worstNecklines), ba.necklineComment);
     setBestWorst('res_collarBlock', 'res_bestCollarSlider', 'res_worstCollarSlider', 'res_collarReason', resolveImgArray(ba.bestCollars), resolveImgArray(ba.worstCollars), ba.collarComment);
-    setBestWorst('res_topsBlock', 'res_bestTopSlider', 'res_worstTopSlider', 'res_topsReason', resolveImgArray(ba.bestTopss), resolveImgArray(ba.worstTopss), ba.topsComment);
+    setBestWorst('res_topsBlock', 'res_bestTopSlider', 'res_worstTopSlider', 'res_topsReason', resolveImgArray(ba.bestTops), resolveImgArray(ba.worstTops), ba.topsComment);
     // Skirt Length comment
     setText('res_skirtLengthComment', ba.skirtLengthComment || '');
     toggleBlock('res_skirtLengthBlock', !!ba.skirtLengthComment);
