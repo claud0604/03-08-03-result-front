@@ -125,7 +125,9 @@ body {
 
 /* ========== Navigation ========== */
 .prev-nav-section { padding: 30px 20px; text-align: center; }
-.prev-customer-title { font-size: 16px; font-weight: 500; margin-bottom: 20px; color: var(--primary-color); }
+.prev-customer-title { font-size: 20px; font-weight: 300; margin-bottom: 16px; color: var(--primary-color); letter-spacing: 0.5px; }
+.prev-customer-name { font-weight: 700; font-size: 22px; }
+.prev-customer-divider { width: 40px; height: 2px; background: var(--primary-color); margin: 0 auto 24px; opacity: 0.4; }
 .prev-nav-buttons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
 .prev-nav-btn {
     padding: 8px 20px; border-radius: 20px; background: var(--card-bg);
