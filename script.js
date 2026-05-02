@@ -309,9 +309,9 @@ function renderResult(data) {
     var faceTypeUrl = fa.typeImageUrl ? resolveImg(fa.typeImageUrl) : null;
     if (!faceTypeUrl && fa.type) {
         var faceTypeFileMap = {
-            'OVAL': 'oval.jpg', 'ROUND': 'round.jpg', 'OBLONG': 'oblong.jpg',
-            'DIAMOND': 'diamond.jpg', 'SQUARE': 'square.jpg',
-            'INVERTED_TRIANGLE': 'inverted-triangle.jpg', 'HEART': 'heart.jpg'
+            'OVAL': 'oval.png', 'ROUND': 'round.png', 'OBLONG': 'oblong.png',
+            'DIAMOND': 'diamond.png', 'SQUARE': 'square.png',
+            'INVERTED_TRIANGLE': 'inverted-triangle.png', 'HEART': 'heart.png'
         };
         var faceTypeMaleFileMap = {
             'OVAL': 'oval-male.jpg', 'ROUND': 'round-male.jpg',
