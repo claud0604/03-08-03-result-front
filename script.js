@@ -356,6 +356,10 @@ function renderResult(data) {
     var bodyDescBox = document.getElementById('res_bodyDescBox');
     if (bodyDescBox) bodyDescBox.style.display = ba.description ? '' : 'none';
 
+    console.log('[Body] ba keys:', Object.keys(ba));
+    console.log('[Body] bestTops:', JSON.stringify(ba.bestTops), 'worstTops:', JSON.stringify(ba.worstTops));
+    console.log('[Body] bestPants:', JSON.stringify(ba.bestPants), 'worstPants:', JSON.stringify(ba.worstPants));
+    console.log('[Body] bestSkirts:', JSON.stringify(ba.bestSkirts), 'worstSkirts:', JSON.stringify(ba.worstSkirts));
     setBestWorst('res_necklineBlock', 'res_bestNecklineSlider', 'res_worstNecklineSlider', 'res_necklineReason', resolveImgArray(ba.bestNecklines), resolveImgArray(ba.worstNecklines), ba.necklineComment);
     setBestWorst('res_collarBlock', 'res_bestCollarSlider', 'res_worstCollarSlider', 'res_collarReason', resolveImgArray(ba.bestCollars), resolveImgArray(ba.worstCollars), ba.collarComment);
     setBestWorst('res_topsBlock', 'res_bestTopSlider', 'res_worstTopSlider', 'res_topsReason', resolveImgArray(ba.bestTops), resolveImgArray(ba.worstTops), ba.topsComment);
