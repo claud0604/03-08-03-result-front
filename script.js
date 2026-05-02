@@ -4,6 +4,9 @@ var customerData = null;
 var imageUrls = {};
 var currentCustomerId = null;
 
+var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel_natural' };
+var SIL_LABELS  = { CIRCLE: 'sil_circle', RECTANGLE: 'sil_rectangle', INVERTED_TRIANGLE: 'sil_inverted_triangle', TRIANGLE: 'sil_triangle', HOURGLASS: 'sil_hourglass' };
+
 // ========== Theme Toggle ==========
 function initTheme() {
     var saved = localStorage.getItem('apl-result-theme');
@@ -343,8 +346,10 @@ function renderResult(data) {
     setSlider('res_hairstyleSlider', 'res_hairstyleBlock', resolveImgArray(fa.hairstyleRec || fa.hairstyleExamples));
 
     // Body
-    setText('res_bodySkeletonType', ba.skeletonType || '');
-    setText('res_bodySilhouetteType', ba.silhouetteType || '');
+    var skelCode = ba.skeletonType || '';
+    var silCode = ba.silhouetteType || '';
+    setText('res_bodySkeletonType', SKEL_LABELS[skelCode] ? t(SKEL_LABELS[skelCode]) : skelCode);
+    setText('res_bodySilhouetteType', SIL_LABELS[silCode] ? t(SIL_LABELS[silCode]) : silCode);
     setPhoto('res_bodyFront', resolveImg(photos.body ? photos.body.front : null));
     setPhoto('res_bodySide', resolveImg(photos.body ? photos.body.side : null));
     setText('res_bodyDesc', ba.description || '');

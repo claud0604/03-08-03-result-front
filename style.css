@@ -204,6 +204,18 @@ body {
 /* ========== Tone Chart ========== */
 .prev-block { padding: 10px 20px; margin-bottom: 8px; }
 .prev-block-title { font-size: 13px; font-weight: 600; color: var(--primary-color); margin-bottom: 10px; }
+.res-body-type-row {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-color); border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 14px 0; margin-bottom: 14px; overflow: hidden;
+}
+.res-body-type-item { flex: 1; text-align: center; padding: 10px 16px; }
+.res-body-type-divider { width: 1px; height: 44px; background: var(--border-color); }
+.res-body-type-label {
+  font-size: 10px; font-weight: 500; color: var(--text-sub);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;
+}
+.res-body-type-value { font-size: 18px; font-weight: 600; color: var(--primary-color); }
 .prev-tone-chart { position: relative; max-width: 480px; margin: 0 auto; }
 .prev-full-img { width: 100%; display: block; border-radius: 8px; }
 .prev-tone-marker {
