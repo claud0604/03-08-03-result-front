@@ -215,7 +215,7 @@ body {
   font-size: 10px; font-weight: 500; color: var(--text-sub);
   text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;
 }
-.res-body-type-value { font-size: 18px; font-weight: 600; color: var(--primary-color); }
+.res-body-type-value { font-size: 18px; font-weight: 600; color: var(--accent-color); }
 .prev-tone-chart { position: relative; max-width: 480px; margin: 0 auto; }
 .prev-full-img { width: 100%; display: block; border-radius: 8px; }
 .prev-tone-marker {
