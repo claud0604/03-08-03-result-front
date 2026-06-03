@@ -5,6 +5,30 @@ var imageUrls = {};
 var currentCustomerId = null;
 
 var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel_natural' };
+
+// ========== Partner Branding ==========
+function applyPartnerBranding(partnerConfig) {
+    if (!partnerConfig) return;
+
+    var logoSrc = partnerConfig.logoUrl || '';
+    var logoAlt = partnerConfig.name || '';
+
+    // Replace intro overlay logo
+    if (logoSrc) {
+        var introLogo = document.querySelector('.intro-logo');
+        if (introLogo) { introLogo.src = logoSrc; introLogo.alt = logoAlt; }
+
+        // Replace login card logo
+        var loginLogo = document.querySelector('.login-logo');
+        if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; }
+    }
+
+    // Apply result page background color
+    if (partnerConfig.bgColor) {
+        var resultContainer = document.getElementById('resultContainer');
+        if (resultContainer) resultContainer.style.backgroundColor = partnerConfig.bgColor;
+    }
+}
 var SIL_LABELS  = { CIRCLE: 'sil_circle', RECTANGLE: 'sil_rectangle', INVERTED_TRIANGLE: 'sil_inverted_triangle', TRIANGLE: 'sil_triangle', HOURGLASS: 'sil_hourglass' };
 
 // ========== Theme Toggle ==========
@@ -133,8 +157,9 @@ function handleVerify(e) {
             return;
         }
 
-        // Store token and load data
+        // Store token and partner info
         sessionStorage.setItem('resultToken', result.token);
+        sessionStorage.setItem('resultPartner', result.customer.partner || '');
         currentCustomerId = result.customer.customerId;
 
         // Update URL if needed
@@ -181,6 +206,9 @@ function loadCustomerResult(customerId) {
         customerData = result.data;
         imageUrls = result.imageUrls || {};
 
+        // Apply partner branding (logo + background)
+        applyPartnerBranding(result.partnerConfig);
+
         // Hide login, show result
         var loginSection = document.getElementById('loginSection');
         if (loginSection) loginSection.style.display = 'none';
@@ -188,7 +216,7 @@ function loadCustomerResult(customerId) {
         var resultContainer = document.getElementById('resultContainer');
         if (resultContainer) resultContainer.style.display = '';
 
-        renderResult(customerData);
+        renderResult(customerData, result.partnerConfig);
         window.scrollTo(0, 0);
         initScrollAnimations();
         initFloatingNav();
@@ -239,7 +267,7 @@ function getEyebrowLabel(code) {
 }
 
 // ========== Render Result ==========
-function renderResult(data) {
+function renderResult(data, partnerConfig) {
     var cd = data.colorDiagnosis || {};
     var fa = data.faceAnalysis || {};
     var ba = data.bodyAnalysis || {};
@@ -248,9 +276,11 @@ function renderResult(data) {
     var gender = data.customerInfo ? data.customerInfo.gender : 'female';
     var genderFolder = gender === 'male' ? 'male' : 'female';
 
-    // Logo + Main Illustration + Tone Table
+    // Logo — use partner logo if available, otherwise default APL logo
+    var logoSrc = (partnerConfig && partnerConfig.logoUrl) ? partnerConfig.logoUrl : 'assets/logo_nobg.png';
+    var logoAlt = (partnerConfig && partnerConfig.name) ? partnerConfig.name : 'APL COLOR';
     var logoImg = document.getElementById('res_logoImg');
-    if (logoImg) logoImg.src = 'assets/logo_nobg.png';
+    if (logoImg) { logoImg.src = logoSrc; logoImg.alt = logoAlt; }
     // mainImg src is set directly in HTML for faster loading
     var toneTableImg = document.getElementById('res_toneTableImg');
     if (toneTableImg) toneTableImg.src = 'assets/tonetable.png';
