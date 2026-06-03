@@ -29,6 +29,38 @@ function applyPartnerBranding(partnerConfig) {
         if (resultContainer) resultContainer.style.backgroundColor = partnerConfig.bgColor;
     }
 }
+/**
+ * Fetch partner branding from API before intro animation.
+ * Pauses CSS animations, applies logos, then resumes.
+ */
+function fetchAndApplyBranding(customerId, callback) {
+    // Pause intro CSS animations while fetching branding
+    var overlay = document.getElementById('introOverlay');
+    var logo = document.querySelector('.intro-logo');
+    if (overlay) overlay.style.animationPlayState = 'paused';
+    if (logo) logo.style.animationPlayState = 'paused';
+
+    var url = API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.RESULT_BRANDING.replace('{id}', customerId);
+    fetch(url)
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+            if (result.success && result.partnerConfig) {
+                applyPartnerBranding(result.partnerConfig);
+                window._cachedPartnerConfig = result.partnerConfig;
+            }
+            // Resume animations after logo is set
+            if (overlay) overlay.style.animationPlayState = '';
+            if (logo) logo.style.animationPlayState = '';
+            callback();
+        })
+        .catch(function () {
+            // Resume animations on error, proceed with default APL branding
+            if (overlay) overlay.style.animationPlayState = '';
+            if (logo) logo.style.animationPlayState = '';
+            callback();
+        });
+}
+
 var SIL_LABELS  = { CIRCLE: 'sil_circle', RECTANGLE: 'sil_rectangle', INVERTED_TRIANGLE: 'sil_inverted_triangle', TRIANGLE: 'sil_triangle', HOURGLASS: 'sil_hourglass' };
 
 // ========== Theme Toggle ==========
@@ -56,16 +88,19 @@ initTheme();
 document.addEventListener('DOMContentLoaded', function () {
     initScrollPosition();
     applyTranslations();
-    initIntroAnimation();
 
     var urlParams = new URLSearchParams(window.location.search);
     currentCustomerId = urlParams.get('id');
 
     if (currentCustomerId) {
-        // URL has customer ID — show simplified login (phone last 4 only)
-        showLoginAfterIntro(true);
+        // Fetch partner branding before intro animation starts
+        fetchAndApplyBranding(currentCustomerId, function () {
+            initIntroAnimation();
+            showLoginAfterIntro(true);
+        });
     } else {
-        // No customer ID — show full login form
+        // No customer ID — no branding to fetch
+        initIntroAnimation();
         showLoginAfterIntro(false);
     }
 });
@@ -207,7 +242,8 @@ function loadCustomerResult(customerId) {
         imageUrls = result.imageUrls || {};
 
         // Apply partner branding (logo + background)
-        applyPartnerBranding(result.partnerConfig);
+        var pc = result.partnerConfig || window._cachedPartnerConfig || null;
+        applyPartnerBranding(pc);
 
         // Hide login, show result
         var loginSection = document.getElementById('loginSection');
@@ -216,7 +252,7 @@ function loadCustomerResult(customerId) {
         var resultContainer = document.getElementById('resultContainer');
         if (resultContainer) resultContainer.style.display = '';
 
-        renderResult(customerData, result.partnerConfig);
+        renderResult(customerData, pc);
         window.scrollTo(0, 0);
         initScrollAnimations();
         initFloatingNav();

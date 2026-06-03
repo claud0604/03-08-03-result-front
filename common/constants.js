@@ -5,6 +5,7 @@ var API_CONFIG = {
     ENDPOINTS: {
         AUTH_VERIFY: '/api/auth/verify',
         RESULT: '/api/result/{id}',
+        RESULT_BRANDING: '/api/result/{id}/branding',
         NOTIFY_SEND: '/api/notify/send',
         CHRONICLE: '/api/chronicle/{id}',
         CHRONICLE_VERSION: '/api/chronicle/{id}/{version}'
