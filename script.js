@@ -13,12 +13,8 @@ function applyPartnerBranding(partnerConfig) {
     var logoSrc = partnerConfig.logoUrl || '';
     var logoAlt = partnerConfig.name || '';
 
-    // Replace intro overlay logo
+    // Replace login card logo
     if (logoSrc) {
-        var introLogo = document.querySelector('.intro-logo');
-        if (introLogo) { introLogo.src = logoSrc; introLogo.alt = logoAlt; }
-
-        // Replace login card logo
         var loginLogo = document.querySelector('.login-logo');
         if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; }
     }
@@ -30,16 +26,9 @@ function applyPartnerBranding(partnerConfig) {
     }
 }
 /**
- * Fetch partner branding from API before intro animation.
- * Pauses CSS animations, applies logos, then resumes.
+ * Fetch partner branding from API and apply if found.
  */
-function fetchAndApplyBranding(customerId, callback) {
-    // Pause intro CSS animations while fetching branding
-    var overlay = document.getElementById('introOverlay');
-    var logo = document.querySelector('.intro-logo');
-    if (overlay) overlay.style.animationPlayState = 'paused';
-    if (logo) logo.style.animationPlayState = 'paused';
-
+function fetchAndApplyBranding(customerId) {
     var url = API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.RESULT_BRANDING.replace('{id}', customerId);
     fetch(url)
         .then(function (res) { return res.json(); })
@@ -48,16 +37,9 @@ function fetchAndApplyBranding(customerId, callback) {
                 applyPartnerBranding(result.partnerConfig);
                 window._cachedPartnerConfig = result.partnerConfig;
             }
-            // Resume animations after logo is set
-            if (overlay) overlay.style.animationPlayState = '';
-            if (logo) logo.style.animationPlayState = '';
-            callback();
         })
         .catch(function (err) {
             console.error('[Branding] fetch failed:', err);
-            if (overlay) overlay.style.animationPlayState = '';
-            if (logo) logo.style.animationPlayState = '';
-            callback();
         });
 }
 
@@ -91,15 +73,10 @@ document.addEventListener('DOMContentLoaded', function () {
     currentCustomerId = urlParams.get('id');
 
     if (currentCustomerId) {
-        // Fetch partner branding before intro animation starts
-        fetchAndApplyBranding(currentCustomerId, function () {
-            initIntroAnimation();
-            showLoginAfterIntro(true);
-        });
+        fetchAndApplyBranding(currentCustomerId);
+        showLogin(true);
     } else {
-        // No customer ID — no branding to fetch
-        initIntroAnimation();
-        showLoginAfterIntro(false);
+        showLogin(false);
     }
 });
 
@@ -111,46 +88,30 @@ function initScrollPosition() {
 window.addEventListener('load', function() { setTimeout(function() { window.scrollTo(0, 0); }, 0); });
 window.addEventListener('pageshow', function(e) { if (e.persisted) window.scrollTo(0, 0); });
 
-// ========== Intro Animation ==========
-function initIntroAnimation() {
-    setTimeout(function() {
-        var overlay = document.getElementById('introOverlay');
-        if (overlay) overlay.classList.add('hidden');
-    }, 2300);
-}
-
 // ========== Show Login ==========
-function showLoginAfterIntro(hasId) {
-    setTimeout(function() {
-        var overlay = document.getElementById('introOverlay');
-        if (overlay) overlay.classList.add('hidden');
+function showLogin(hasId) {
+    var loginSection = document.getElementById('loginSection');
+    if (loginSection) loginSection.style.display = 'flex';
 
-        var loginSection = document.getElementById('loginSection');
-        if (loginSection) loginSection.style.display = 'flex';
+    var customerIdField = document.getElementById('customerIdField');
+    var loginDesc = document.getElementById('loginDesc');
 
-        var customerIdField = document.getElementById('customerIdField');
-        var loginDesc = document.getElementById('loginDesc');
+    if (hasId) {
+        if (customerIdField) customerIdField.style.display = 'none';
+        if (loginDesc) loginDesc.setAttribute('data-i18n', 'res_verify_subtitle_link');
+    } else {
+        if (customerIdField) customerIdField.style.display = 'block';
+        if (loginDesc) loginDesc.setAttribute('data-i18n', 'res_verify_subtitle');
+    }
 
-        if (hasId) {
-            // Hide customer ID field, show simplified message
-            if (customerIdField) customerIdField.style.display = 'none';
-            if (loginDesc) loginDesc.setAttribute('data-i18n', 'res_verify_subtitle_link');
-        } else {
-            // Show customer ID field
-            if (customerIdField) customerIdField.style.display = 'block';
-            if (loginDesc) loginDesc.setAttribute('data-i18n', 'res_verify_subtitle');
-        }
+    applyTranslations();
 
-        applyTranslations();
-
-        // Phone input: digits only
-        var phoneInput = document.getElementById('inputPhoneLast4');
-        if (phoneInput) {
-            phoneInput.addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '').slice(0, 4);
-            });
-        }
-    }, 2300);
+    var phoneInput = document.getElementById('inputPhoneLast4');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 4);
+        });
+    }
 }
 
 // ========== Handle Verify ==========
@@ -271,8 +232,6 @@ function loadCustomerResult(customerId) {
 
 // ========== Error Display ==========
 function showError(msg) {
-    var overlay = document.getElementById('introOverlay');
-    if (overlay) overlay.classList.add('hidden');
 
     document.body.innerHTML =
         '<div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;padding:40px;background:#faf9f7;">' +
