@@ -53,8 +53,8 @@ function fetchAndApplyBranding(customerId, callback) {
             if (logo) logo.style.animationPlayState = '';
             callback();
         })
-        .catch(function () {
-            // Resume animations on error, proceed with default APL branding
+        .catch(function (err) {
+            console.error('[Branding] fetch failed:', err);
             if (overlay) overlay.style.animationPlayState = '';
             if (logo) logo.style.animationPlayState = '';
             callback();
@@ -194,6 +194,12 @@ function handleVerify(e) {
         sessionStorage.setItem('resultToken', result.token);
         sessionStorage.setItem('resultPartner', result.customer.partner || '');
         currentCustomerId = result.customer.customerId;
+
+        // Apply partner branding from auth response (fallback if pre-fetch failed)
+        if (result.partnerConfig) {
+            applyPartnerBranding(result.partnerConfig);
+            window._cachedPartnerConfig = result.partnerConfig;
+        }
 
         // Update URL if needed
         if (!new URLSearchParams(window.location.search).get('id')) {
