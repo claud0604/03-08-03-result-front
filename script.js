@@ -66,9 +66,7 @@ var SIL_LABELS  = { CIRCLE: 'sil_circle', RECTANGLE: 'sil_rectangle', INVERTED_T
 // ========== Theme Toggle ==========
 function initTheme() {
     var saved = localStorage.getItem('apl-result-theme');
-    if (saved) {
-        document.documentElement.setAttribute('data-theme', saved);
-    }
+    document.documentElement.setAttribute('data-theme', saved || 'light');
 }
 function toggleTheme() {
     var current = document.documentElement.getAttribute('data-theme');
