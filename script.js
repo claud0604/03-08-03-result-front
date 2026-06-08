@@ -16,7 +16,7 @@ function applyPartnerBranding(partnerConfig) {
     // Replace login card logo
     if (logoSrc) {
         var loginLogo = document.querySelector('.login-logo');
-        if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; }
+        if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; loginLogo.style.visibility = ''; }
     }
 
     // Apply result page background color
@@ -275,11 +275,17 @@ function renderResult(data, partnerConfig) {
     var gender = data.customerInfo ? data.customerInfo.gender : 'female';
     var genderFolder = gender === 'male' ? 'male' : 'female';
 
-    // Logo — use partner logo if available, otherwise default APL logo
-    var logoSrc = (partnerConfig && partnerConfig.logoUrl) ? partnerConfig.logoUrl : 'assets/logo_nobg.png';
-    var logoAlt = (partnerConfig && partnerConfig.name) ? partnerConfig.name : 'APL COLOR';
+    // Logo — show partner logo only; hide if no partner
     var logoImg = document.getElementById('res_logoImg');
-    if (logoImg) { logoImg.src = logoSrc; logoImg.alt = logoAlt; }
+    if (logoImg) {
+        if (partnerConfig && partnerConfig.logoUrl) {
+            logoImg.src = partnerConfig.logoUrl;
+            logoImg.alt = partnerConfig.name || '';
+            logoImg.style.display = '';
+        } else {
+            logoImg.style.display = 'none';
+        }
+    }
     // mainImg src is set directly in HTML for faster loading
     var toneTableImg = document.getElementById('res_toneTableImg');
     if (toneTableImg) toneTableImg.src = 'assets/tonetable.png';
