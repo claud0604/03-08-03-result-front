@@ -9,26 +9,25 @@ var discontinuedItemIds = [];  // catalogItemIds now discontinued
 var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel_natural' };
 
 // ========== Partner Branding ==========
+// Default APL COLOR logo (used when the customer has no partner branding)
+var DEFAULT_LOGO_URL = 'https://cdn-r2.apls.kr/02-expert/00-basic-setting/APLCOLOR_logo.png';
+
 function applyPartnerBranding(partnerConfig) {
-    if (!partnerConfig) return;
+    var logoSrc = (partnerConfig && partnerConfig.logoUrl) || DEFAULT_LOGO_URL;
+    var logoAlt = (partnerConfig && partnerConfig.name) || 'APL COLOR';
 
-    var logoSrc = partnerConfig.logoUrl || '';
-    var logoAlt = partnerConfig.name || '';
-
-    // Replace login card logo
-    if (logoSrc) {
-        var loginLogo = document.querySelector('.login-logo');
-        if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; loginLogo.style.visibility = ''; }
-    }
+    // Login card logo — partner logo or APL default
+    var loginLogo = document.querySelector('.login-logo');
+    if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; loginLogo.style.visibility = ''; }
 
     // Apply result page background color
-    if (partnerConfig.bgColor) {
+    if (partnerConfig && partnerConfig.bgColor) {
         var resultContainer = document.getElementById('resultContainer');
         if (resultContainer) resultContainer.style.backgroundColor = partnerConfig.bgColor;
     }
 }
 /**
- * Fetch partner branding from API and apply if found.
+ * Fetch partner branding from API and apply (APL default when none).
  */
 function fetchAndApplyBranding(customerId) {
     var url = API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.RESULT_BRANDING.replace('{id}', customerId);
@@ -38,10 +37,13 @@ function fetchAndApplyBranding(customerId) {
             if (result.success && result.partnerConfig) {
                 applyPartnerBranding(result.partnerConfig);
                 window._cachedPartnerConfig = result.partnerConfig;
+            } else {
+                applyPartnerBranding(null);
             }
         })
         .catch(function (err) {
             console.error('[Branding] fetch failed:', err);
+            applyPartnerBranding(null);
         });
 }
 
@@ -78,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetchAndApplyBranding(currentCustomerId);
         showLogin(true);
     } else {
+        applyPartnerBranding(null); // APL default logo
         showLogin(false);
     }
 });
@@ -324,16 +327,12 @@ function renderResult(data, partnerConfig) {
     var gender = data.customerInfo ? data.customerInfo.gender : 'female';
     var genderFolder = gender === 'male' ? 'male' : 'female';
 
-    // Logo — show partner logo only; hide if no partner
+    // Logo — partner logo, or APL default when no partner branding
     var logoImg = document.getElementById('res_logoImg');
     if (logoImg) {
-        if (partnerConfig && partnerConfig.logoUrl) {
-            logoImg.src = partnerConfig.logoUrl;
-            logoImg.alt = partnerConfig.name || '';
-            logoImg.style.display = '';
-        } else {
-            logoImg.style.display = 'none';
-        }
+        logoImg.src = (partnerConfig && partnerConfig.logoUrl) || DEFAULT_LOGO_URL;
+        logoImg.alt = (partnerConfig && partnerConfig.name) || 'APL COLOR';
+        logoImg.style.display = '';
     }
     // mainImg src is set directly in HTML for faster loading
     var toneTableImg = document.getElementById('res_toneTableImg');
