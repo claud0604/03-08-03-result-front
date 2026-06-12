@@ -3,6 +3,8 @@
 var customerData = null;
 var imageUrls = {};
 var currentCustomerId = null;
+var imageMakingScore = null;   // { score, breakdown, max } from result API
+var discontinuedItemIds = [];  // catalogItemIds now discontinued
 
 var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel_natural' };
 
@@ -205,6 +207,8 @@ function loadCustomerResult(customerId) {
 
         customerData = result.data;
         imageUrls = result.imageUrls || {};
+        imageMakingScore = result.imageMakingScore || null;
+        discontinuedItemIds = result.discontinuedItemIds || [];
 
         // Apply partner branding (logo + background)
         var pc = result.partnerConfig || window._cachedPartnerConfig || null;
@@ -265,6 +269,51 @@ function getEyebrowLabel(code) {
     return entry ? (entry[lang] || entry.en) : code;
 }
 
+// ========== Image Making Completion Gauge ==========
+function renderScoreGauge(scoreObj) {
+    var section = document.getElementById('res_scoreSection');
+    if (!section) return;
+    if (!scoreObj || !scoreObj.score) { section.style.display = 'none'; return; }
+
+    section.style.display = '';
+    var target = scoreObj.score;
+
+    // Fill bar (CSS transition handles the animation)
+    var fill = document.getElementById('res_scoreFill');
+    if (fill) {
+        requestAnimationFrame(function () {
+            fill.style.width = target + '%';
+        });
+    }
+
+    // Count-up number
+    var numEl = document.getElementById('res_scoreNum');
+    if (numEl) {
+        var start = null;
+        var DURATION = 1200;
+        function step(ts) {
+            if (!start) start = ts;
+            var progress = Math.min((ts - start) / DURATION, 1);
+            // ease-out
+            var eased = 1 - Math.pow(1 - progress, 3);
+            numEl.textContent = Math.round(target * eased);
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    // Upsell hint when body diagnosis is missing
+    var hint = document.getElementById('res_scoreHint');
+    if (hint) {
+        if (scoreObj.breakdown && !scoreObj.breakdown.body) {
+            hint.textContent = t('res_score_hint_body');
+            hint.style.display = '';
+        } else {
+            hint.style.display = 'none';
+        }
+    }
+}
+
 // ========== Render Result ==========
 function renderResult(data, partnerConfig) {
     var cd = data.colorDiagnosis || {};
@@ -292,6 +341,9 @@ function renderResult(data, partnerConfig) {
 
     // Customer name
     setText('res_customerName', data.customerInfo ? data.customerInfo.name : '');
+
+    // Image-making completion gauge
+    renderScoreGauge(imageMakingScore);
 
     // Face photos (above-the-fold → eager)
     setPhoto('res_facePhotoFront', resolveImg(photos.face ? photos.face.front : null), true);
@@ -335,6 +387,20 @@ function renderResult(data, partnerConfig) {
     setProductSlider('res_shadowProdSlider', 'res_shadowProdBlock', catRecs.shadowBlush, resolveImgArray(cd.productImages ? cd.productImages.shadowBlush : null));
     setSlider('res_lipKeySlider', 'res_lipKeyBlock', resolveImgArray(cd.makeup ? cd.makeup.lip : null));
     setProductSlider('res_lipProdSlider', 'res_lipProdBlock', catRecs.lip, resolveImgArray(cd.productImages ? cd.productImages.lip : null));
+
+    // Re-recommend CTA — visible when any recommended product is discontinued
+    var rerecSection = document.getElementById('res_rerecommendSection');
+    if (rerecSection) {
+        rerecSection.style.display = discontinuedItemIds.length > 0 ? '' : 'none';
+        var rerecBtn = document.getElementById('res_reRecommendBtn');
+        if (rerecBtn && !rerecBtn._bound) {
+            rerecBtn._bound = true;
+            rerecBtn.addEventListener('click', function () {
+                // Payment (Toss) integration comes next phase
+                alert(t('res_rerecommend_soon'));
+            });
+        }
+    }
     setSlider('res_nailSlider', 'res_nailBlock', resolveImgArray(cd.colorUsage ? cd.colorUsage.nail : null));
     setSlider('res_hairSlider', 'res_hairBlock', resolveImgArray(cd.colorUsage ? cd.colorUsage.hair : null));
     setSlider('res_accColorSlider', 'res_accColorBlock', resolveImgArray(cd.colorUsage ? cd.colorUsage.accessory : null));
@@ -513,11 +579,13 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
             var imgUrl = resolveImg(item.imageUrl) || '';
             var brand = item.brand || '';
             var name = item.name || '';
+            var isDiscontinued = item.catalogItemId && discontinuedItemIds.indexOf(String(item.catalogItemId)) !== -1;
             var imgTag = imgUrl
                 ? '<img src="' + imgUrl + '" loading="lazy" onerror="this.style.display=\'none\'">'
                 : '<div class="prev-product-no-img"></div>';
-            return '<div class="prev-product-card">' +
+            return '<div class="prev-product-card' + (isDiscontinued ? ' discontinued' : '') + '">' +
                 imgTag +
+                (isDiscontinued ? '<div class="prev-discontinued-overlay"><span>' + t('res_discontinued') + '</span></div>' : '') +
                 (brand || name ? '<div class="prev-product-info">' +
                     (brand ? '<span class="prev-product-brand">' + brand + '</span>' : '') +
                     (name ? '<span class="prev-product-name">' + name + '</span>' : '') +

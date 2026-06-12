@@ -26,6 +26,16 @@ var translations = {
         res_nav_body: 'Body',
         res_nav_style: 'Style',
 
+        // Image Making Score
+        res_score_title: 'Image Making Completion',
+        res_score_hint_body: 'Add a body-fit diagnosis to reach 90%.',
+
+        // Discontinued / Re-recommend
+        res_discontinued: 'Discontinued',
+        res_rerecommend_desc: 'Some of your recommended products are discontinued.',
+        res_rerecommend_btn: 'Get New Recommendations',
+        res_rerecommend_soon: 'Payment is coming soon. Please contact your consultant.',
+
         // Color Section
         res_sec_color_title: 'Personal Color Analysis',
         res_sec_color_sub: 'Personalcolor',
@@ -153,6 +163,16 @@ var translations = {
         res_nav_body: '체형',
         res_nav_style: '스타일',
 
+        // 이미지메이킹 완성도
+        res_score_title: '이미지메이킹 완성도',
+        res_score_hint_body: '체형 핏 진단을 받으면 90%까지 올라가요.',
+
+        // 단종 / 재추천
+        res_discontinued: '단종',
+        res_rerecommend_desc: '추천받은 상품 중 단종된 상품이 있어요.',
+        res_rerecommend_btn: '새로 추천받기',
+        res_rerecommend_soon: '결제 기능 준비 중입니다. 담당자에게 문의해주세요.',
+
         res_sec_color_title: '퍼스널컬러분석',
         res_sec_color_sub: 'Personalcolor',
         res_photo_front: '정면',
@@ -273,6 +293,16 @@ var translations = {
         res_nav_body: '体型',
         res_nav_style: 'スタイル',
 
+        // イメージメイキング完成度
+        res_score_title: 'イメージメイキング完成度',
+        res_score_hint_body: '体型フィット診断を受けると90%まで上がります。',
+
+        // 生産終了 / 再推薦
+        res_discontinued: '生産終了',
+        res_rerecommend_desc: 'おすすめ商品の中に生産終了した商品があります。',
+        res_rerecommend_btn: '新しくおすすめを受ける',
+        res_rerecommend_soon: '決済機能は準備中です。担当者にお問い合わせください。',
+
         res_sec_color_title: 'パーソナルカラー分析',
         res_sec_color_sub: 'Personalcolor',
         res_photo_front: '正面',
@@ -392,6 +422,16 @@ var translations = {
         res_nav_face: '脸型',
         res_nav_body: '体型',
         res_nav_style: '风格',
+
+        // 形象塑造完成度
+        res_score_title: '形象塑造完成度',
+        res_score_hint_body: '接受体型诊断后可提升至90%。',
+
+        // 停产 / 重新推荐
+        res_discontinued: '停产',
+        res_rerecommend_desc: '您的推荐商品中有已停产的商品。',
+        res_rerecommend_btn: '获取新推荐',
+        res_rerecommend_soon: '支付功能即将上线，请联系您的顾问。',
 
         res_sec_color_title: '个人色彩分析',
         res_sec_color_sub: 'Personalcolor',

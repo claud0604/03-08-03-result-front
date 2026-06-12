@@ -61,6 +61,13 @@
         <!-- Header -->
         <div class="prev-header">
         </div>
+<!-- Image Making Completion Score -->
+        <div class="prev-score-section" id="res_scoreSection" style="display:none;">
+            <div class="prev-score-label" data-i18n="res_score_title">Image Making Completion</div>
+            <div class="prev-score-value"><span id="res_scoreNum">0</span><span class="prev-score-pct">%</span></div>
+            <div class="prev-score-bar"><div class="prev-score-fill" id="res_scoreFill"></div></div>
+            <div class="prev-score-hint" id="res_scoreHint" style="display:none;"></div>
+        </div>
 <!-- Customer Name + Navigation -->
         <div class="prev-nav-section">
             <h2 class="prev-customer-title"><span id="res_customerName" class="prev-customer-name"></span><span data-i18n="res_report_title">'s Diagnosis Report</span></h2>
@@ -214,6 +221,13 @@
         <div class="prev-block" id="res_shadowProdBlock"><p class="prev-block-title" data-i18n="res_shadow_product">Shadow & Blush Products</p><div class="prev-slider" id="res_shadowProdSlider"></div></div>
         <div class="prev-block" id="res_lipKeyBlock"><p class="prev-block-title" data-i18n="res_lip_keyword">Lip Color</p><div class="prev-slider" id="res_lipKeySlider"></div></div>
         <div class="prev-block" id="res_lipProdBlock"><p class="prev-block-title" data-i18n="res_lip_product">Lip Products</p><div class="prev-slider" id="res_lipProdSlider"></div></div>
+        <!-- Re-recommend CTA (shown when recommended products are discontinued) -->
+        <div class="prev-rerecommend-section" id="res_rerecommendSection" style="display:none;">
+            <p class="prev-rerecommend-desc" data-i18n="res_rerecommend_desc">Some of your recommended products are discontinued.</p>
+            <button type="button" class="prev-rerecommend-btn" id="res_reRecommendBtn">
+                <span data-i18n="res_rerecommend_btn">Get New Recommendations</span><span class="prev-rerecommend-price">&#8361;2,900</span>
+            </button>
+        </div>
         <div class="prev-mid-section">
             <h3 class="prev-mid-h3" data-i18n="res_color_usage">Color Usage</h3>
             <p class="prev-mid-sub">Color Usage</p>
