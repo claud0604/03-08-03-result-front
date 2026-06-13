@@ -10,7 +10,7 @@ var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel
 
 // ========== Partner Branding ==========
 // Default APL COLOR logo (used when the customer has no partner branding)
-var DEFAULT_LOGO_URL = 'https://cdn-r2.apls.kr/02-expert/00-basic-setting/APLCOLOR_logo.png';
+var DEFAULT_LOGO_URL = 'https://cdn-r2.apls.kr/02-expert/00-basic-setting/APLCOLOR_logo_nobg.png';
 
 function applyPartnerBranding(partnerConfig) {
     var logoSrc = (partnerConfig && partnerConfig.logoUrl) || DEFAULT_LOGO_URL;
