@@ -9,22 +9,22 @@ var discontinuedItemIds = [];  // catalogItemIds now discontinued
 var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel_natural' };
 
 // ========== Partner Branding ==========
-// Default APL COLOR logo (used when the customer has no partner branding)
+// Default APL COLOR branding (used when the customer has no partner branding)
 var DEFAULT_LOGO_URL = 'https://cdn-r2.apls.kr/02-expert/00-basic-setting/APLCOLOR_logo_nobg.png';
+var DEFAULT_BG_COLOR = 'rgb(254, 254, 254)';
 
 function applyPartnerBranding(partnerConfig) {
     var logoSrc = (partnerConfig && partnerConfig.logoUrl) || DEFAULT_LOGO_URL;
     var logoAlt = (partnerConfig && partnerConfig.name) || 'APL COLOR';
+    var bgColor = (partnerConfig && partnerConfig.bgColor) || DEFAULT_BG_COLOR;
 
     // Login card logo — partner logo or APL default
     var loginLogo = document.querySelector('.login-logo');
     if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; loginLogo.style.visibility = ''; }
 
     // Apply result page background color
-    if (partnerConfig && partnerConfig.bgColor) {
-        var resultContainer = document.getElementById('resultContainer');
-        if (resultContainer) resultContainer.style.backgroundColor = partnerConfig.bgColor;
-    }
+    var resultContainer = document.getElementById('resultContainer');
+    if (resultContainer) resultContainer.style.backgroundColor = bgColor;
 }
 /**
  * Fetch partner branding from API and apply (APL default when none).
