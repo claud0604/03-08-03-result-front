@@ -22,11 +22,13 @@ function applyPartnerBranding(partnerConfig) {
     var loginLogo = document.querySelector('.login-logo');
     if (loginLogo) { loginLogo.src = logoSrc; loginLogo.alt = logoAlt; loginLogo.style.visibility = ''; }
 
-    // Apply background color to both login and result sections
+    // Apply background color to result container, login section, and login card
     var resultContainer = document.getElementById('resultContainer');
     if (resultContainer) resultContainer.style.backgroundColor = bgColor;
     var loginSection = document.getElementById('loginSection');
     if (loginSection) loginSection.style.backgroundColor = bgColor;
+    var loginCard = document.querySelector('.login-card');
+    if (loginCard) loginCard.style.backgroundColor = bgColor;
 }
 /**
  * Fetch partner branding from API and apply (APL default when none).
