@@ -5,6 +5,7 @@ var imageUrls = {};
 var currentCustomerId = null;
 var imageMakingScore = null;   // { score, breakdown, max } from result API
 var discontinuedItemIds = [];  // catalogItemIds now discontinued
+var currentPartnerConfig = null; // null = APL COLOR direct, object = partner
 
 var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel_natural' };
 
@@ -219,6 +220,7 @@ function loadCustomerResult(customerId) {
 
         // Apply partner branding (logo + background)
         var pc = result.partnerConfig || window._cachedPartnerConfig || null;
+        currentPartnerConfig = pc;
         applyPartnerBranding(pc);
 
         // Hide login, show result
@@ -394,7 +396,8 @@ function renderResult(data, partnerConfig) {
     // Re-recommend CTA — visible when any recommended product is discontinued
     var rerecSection = document.getElementById('res_rerecommendSection');
     if (rerecSection) {
-        rerecSection.style.display = discontinuedItemIds.length > 0 ? '' : 'none';
+        var isAplColor = !currentPartnerConfig;
+        rerecSection.style.display = (discontinuedItemIds.length > 0 && isAplColor) ? '' : 'none';
         var rerecBtn = document.getElementById('res_reRecommendBtn');
         if (rerecBtn && !rerecBtn._bound) {
             rerecBtn._bound = true;
