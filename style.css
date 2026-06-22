@@ -468,3 +468,19 @@ body {
     .login-card { border-radius: 16px; padding: 36px 24px; }
     .prev-slider-card { flex: 0 0 120px; }
 }
+
+/* ─── Site Footer (사업자 정보 / 약관) ─── */
+.site-footer {
+    margin-top: 60px;
+    padding: 28px 20px 40px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dim);
+}
+.footer-links { margin-bottom: 12px; }
+.footer-links a { color: var(--text-color); text-decoration: none; margin: 0 6px; }
+.footer-links a:hover { text-decoration: underline; }
+.footer-sep { opacity: 0.35; }
+.footer-biz p { margin: 3px 0; line-height: 1.6; }
+.footer-copy { margin-top: 10px; opacity: 0.7; }
