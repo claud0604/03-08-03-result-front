@@ -739,9 +739,8 @@ function initiateReRecommendPayment() {
                 paymentId: paymentId,
                 orderName: t('res_rerecommend_order_name'),
                 totalAmount: PORTONE_CONFIG.AMOUNT,
-                currency: 'KRW',
-                payMethod: 'EASY_PAY',
-                easyPay: { easyPayProvider: 'TOSSPAY' }
+                currency: 'KRW'
+                // payMethod 미지정 → 결제창에서 카드/간편결제 등 선택
             });
         })
         .then(function(response) {
