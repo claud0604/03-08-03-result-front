@@ -153,10 +153,22 @@ function handleVerify(e) {
     .then(function(res) { return res.json(); })
     .then(function(result) {
         if (!result.success) {
-            var msgKey = 'res_error_invalid';
-            if (result.message && result.message.includes('not yet available')) msgKey = 'res_error_not_ready';
-            if (result.message && result.message.includes('not found')) msgKey = 'res_error_not_found';
-            if (errorEl) errorEl.textContent = t(msgKey);
+            var msg;
+            if (result.locked) {
+                // Too many failed attempts — account temporarily locked
+                msg = t('res_error_locked').replace('{min}', result.lockedMinutes || 30);
+            } else if (result.message && result.message.includes('not yet available')) {
+                msg = t('res_error_not_ready');
+            } else if (result.message && result.message.includes('not found')) {
+                msg = t('res_error_not_found');
+            } else {
+                // Invalid credentials — show remaining attempts before lockout
+                msg = t('res_error_invalid');
+                if (typeof result.remainingAttempts === 'number' && result.remainingAttempts > 0) {
+                    msg += t('res_error_attempts_left').replace('{n}', result.remainingAttempts);
+                }
+            }
+            if (errorEl) errorEl.textContent = msg;
             if (btn) { btn.disabled = false; btn.textContent = t('res_verify_btn'); }
             return;
         }
