@@ -1,5 +1,12 @@
 // ========== APL Result Page Script ==========
 
+// ========== PortOne (결제) 설정 ==========
+var PORTONE_CONFIG = {
+    STORE_ID: 'store-d5ff4cbf-4ebb-441c-bbc6-1eae30d8a950',
+    CHANNEL_KEY: 'channel-key-eedf93db-84d5-4fea-bcfd-fa29c70e1891', // 토스페이-테스트 채널
+    AMOUNT: 2900
+};
+
 var customerData = null;
 var imageUrls = {};
 var currentCustomerId = null;
@@ -404,6 +411,15 @@ function renderResult(data, partnerConfig) {
     setProductSlider('res_shadowProdSlider', 'res_shadowProdBlock', catRecs.shadowBlush, resolveImgArray(cd.productImages ? cd.productImages.shadowBlush : null));
     setSlider('res_lipKeySlider', 'res_lipKeyBlock', resolveImgArray(cd.makeup ? cd.makeup.lip : null));
     setProductSlider('res_lipProdSlider', 'res_lipProdBlock', catRecs.lip, resolveImgArray(cd.productImages ? cd.productImages.lip : null));
+    // 4개 블록이 모두 없으면 "Makeup Color Keyword" 섹션 제목도 숨기기
+    var mkSection = document.getElementById('res_makeupKeywordSection');
+    if (mkSection) {
+        var anyMkVisible = ['res_shadowKeyBlock', 'res_shadowProdBlock', 'res_lipKeyBlock', 'res_lipProdBlock'].some(function(id) {
+            var el = document.getElementById(id);
+            return el && el.style.display !== 'none';
+        });
+        mkSection.style.display = anyMkVisible ? '' : 'none';
+    }
 
     // Re-recommend CTA — visible when any recommended product is discontinued
     var rerecSection = document.getElementById('res_rerecommendSection');
@@ -414,8 +430,7 @@ function renderResult(data, partnerConfig) {
         if (rerecBtn && !rerecBtn._bound) {
             rerecBtn._bound = true;
             rerecBtn.addEventListener('click', function () {
-                // Payment (Toss) integration comes next phase
-                alert(t('res_rerecommend_soon'));
+                initiateReRecommendPayment();
             });
         }
     }
@@ -708,4 +723,54 @@ function initFloatingNav() {
     });
 
     toggleBtn.addEventListener('click', function() { floatNav.classList.toggle('menu-open'); });
+}
+
+// ========== 포트원 V2 결제 ==========
+function initiateReRecommendPayment() {
+    var btn = document.getElementById('res_reRecommendBtn');
+    if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+
+    import('https://cdn.portone.io/v2/browser-sdk.esm.js')
+        .then(function(PortOne) {
+            var paymentId = 'rr-' + currentCustomerId + '-' + Date.now();
+            return PortOne.requestPayment({
+                storeId: PORTONE_CONFIG.STORE_ID,
+                channelKey: PORTONE_CONFIG.CHANNEL_KEY,
+                paymentId: paymentId,
+                orderName: t('res_rerecommend_order_name'),
+                totalAmount: PORTONE_CONFIG.AMOUNT,
+                currency: 'KRW',
+                payMethod: 'EASY_PAY',
+                easyPay: { easyPayProvider: 'KAKAOPAY' }
+            });
+        })
+        .then(function(response) {
+            if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+            if (response && response.code) {
+                if (response.code === 'PAYMENT_CANCELLED') return;
+                alert(t('res_payment_failed') + (response.message ? ': ' + response.message : ''));
+                return;
+            }
+            // 백엔드 검증
+            var token = sessionStorage.getItem('resultToken');
+            var paymentId = response.paymentId;
+            return fetch(API_CONFIG.BASE_URL + '/api/payment/confirm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                body: JSON.stringify({ paymentId: paymentId, customerId: currentCustomerId, amount: PORTONE_CONFIG.AMOUNT })
+            }).then(function(r) { return r.json(); }).then(function(data) {
+                if (data.success) {
+                    var sec = document.getElementById('res_rerecommendSection');
+                    if (sec) sec.style.display = 'none';
+                    alert(t('res_payment_success'));
+                } else {
+                    alert(t('res_payment_verify_fail'));
+                }
+            });
+        })
+        .catch(function(err) {
+            if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+            console.error('[Payment]', err);
+            alert(t('res_payment_error'));
+        });
 }
