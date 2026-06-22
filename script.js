@@ -741,7 +741,7 @@ function initiateReRecommendPayment() {
                 totalAmount: PORTONE_CONFIG.AMOUNT,
                 currency: 'KRW',
                 payMethod: 'EASY_PAY',
-                easyPay: { easyPayProvider: 'KAKAOPAY' }
+                easyPay: { easyPayProvider: 'TOSSPAY' }
             });
         })
         .then(function(response) {
