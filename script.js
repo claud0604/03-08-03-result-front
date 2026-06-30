@@ -742,10 +742,11 @@ function initiateReRecommendPayment() {
                 currency: 'KRW',
                 // KG이니시스는 payMethod 필수. 카드 결제창에 간편결제(카카오/네이버 등)도 함께 노출됨
                 payMethod: 'CARD',
-                // KG이니시스 V2 일반결제는 구매자 이메일 필수
+                // KG이니시스 V2 일반결제는 구매자 이메일·휴대폰 필수
                 customer: {
                     fullName: (customerData && customerData.customerInfo && customerData.customerInfo.name) || '',
-                    email: (customerData && customerData.customerInfo && customerData.customerInfo.email) || 'noreply@apls.kr'
+                    email: (customerData && customerData.customerInfo && customerData.customerInfo.email) || 'noreply@apls.kr',
+                    phoneNumber: ((customerData && customerData.customerInfo && customerData.customerInfo.phone) || '').replace(/\D/g, '')
                 }
             });
         })
