@@ -739,8 +739,9 @@ function initiateReRecommendPayment() {
                 paymentId: paymentId,
                 orderName: t('res_rerecommend_order_name'),
                 totalAmount: PORTONE_CONFIG.AMOUNT,
-                currency: 'KRW'
-                // payMethod 미지정 → 결제창에서 카드/간편결제 등 선택
+                currency: 'KRW',
+                // KG이니시스는 payMethod 필수. 카드 결제창에 간편결제(카카오/네이버 등)도 함께 노출됨
+                payMethod: 'CARD'
             });
         })
         .then(function(response) {
