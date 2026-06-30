@@ -371,7 +371,7 @@ body {
     color: var(--accent-color);
     animation: rerecBlink 1.7s ease-in-out infinite;
 }
-.prev-rerecommend-pending::after { content: ''; animation: rerecDots 1.6s steps(1, end) infinite; }
+.prev-rerecommend-pending::after { content: ''; display: block; min-height: 1.2em; letter-spacing: 2px; animation: rerecDots 1.6s steps(1, end) infinite; }
 
 /* 단종 상품이 있는 카테고리 블록(립/섀도) — 재추천 결제 후(pending) 작업중 테두리 */
 .prev-block.rerec-pending {
