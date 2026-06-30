@@ -369,6 +369,30 @@ body {
     font-size: 14px;
     font-weight: 600;
     color: var(--accent-color);
+    animation: rerecBlink 1.7s ease-in-out infinite;
+}
+.prev-rerecommend-pending::after { content: ''; animation: rerecDots 1.6s steps(1, end) infinite; }
+
+/* 단종 카드 — 재추천 결제 후(pending) 작업중 표시 */
+.prev-product-card.rerec-pending {
+    border: 2px dashed var(--accent-color);
+    animation: rerecCardPulse 1.8s ease-out infinite;
+}
+.prev-rerec-working {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #fff;
+}
+.prev-rerec-working::after { content: ''; animation: rerecDots 1.6s steps(1, end) infinite; }
+
+@keyframes rerecBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes rerecDots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+@keyframes rerecCardPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(160, 120, 64, 0.5); }
+    70% { box-shadow: 0 0 0 6px rgba(160, 120, 64, 0); }
 }
 
 .prev-product-brand { display: block; font-size: 10px; color: var(--text-dim); line-height: 1.3; }

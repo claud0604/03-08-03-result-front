@@ -623,12 +623,15 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
             var brand = item.brand || '';
             var name = item.name || '';
             var isDiscontinued = item.catalogItemId && discontinuedItemIds.indexOf(String(item.catalogItemId)) !== -1;
+            // 재추천 결제 완료(pending) + 단종 카드 → 작업중 테두리/애니메이션
+            var rerecPendingCls = (isDiscontinued && reRecommendStatus === 'pending') ? ' rerec-pending' : '';
             var imgTag = imgUrl
                 ? '<img src="' + imgUrl + '" loading="lazy" onerror="this.style.display=\'none\'">'
                 : '<div class="prev-product-no-img"></div>';
-            return '<div class="prev-product-card' + (isDiscontinued ? ' discontinued' : '') + '">' +
+            return '<div class="prev-product-card' + (isDiscontinued ? ' discontinued' : '') + rerecPendingCls + '">' +
                 imgTag +
-                (isDiscontinued ? '<div class="prev-discontinued-overlay"><span>' + t('res_discontinued') + '</span></div>' : '') +
+                (isDiscontinued ? '<div class="prev-discontinued-overlay"><span>' + t('res_discontinued') + '</span>' +
+                    (rerecPendingCls ? '<span class="prev-rerec-working" data-i18n="res_rerecommend_working">새 추천 준비 중</span>' : '') + '</div>' : '') +
                 (brand || name ? '<div class="prev-product-info">' +
                     (brand ? '<span class="prev-product-brand">' + brand + '</span>' : '') +
                     (name ? '<span class="prev-product-name">' + name + '</span>' : '') +
