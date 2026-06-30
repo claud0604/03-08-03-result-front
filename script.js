@@ -12,6 +12,7 @@ var imageUrls = {};
 var currentCustomerId = null;
 var imageMakingScore = null;   // { score, breakdown, max } from result API
 var discontinuedItemIds = [];  // catalogItemIds now discontinued
+var reRecommendStatus = 'none';  // 'none' | 'pending' | 'done' — 재추천 결제 상태
 var currentPartnerConfig = null; // null = APL COLOR direct, object = partner
 
 var SKEL_LABELS = { STRAIGHT: 'skel_straight', WAVE: 'skel_wave', NATURAL: 'skel_natural' };
@@ -236,6 +237,7 @@ function loadCustomerResult(customerId) {
         imageUrls = result.imageUrls || {};
         imageMakingScore = result.imageMakingScore || null;
         discontinuedItemIds = result.discontinuedItemIds || [];
+        reRecommendStatus = (result.reRecommend && result.reRecommend.status) || 'none';
 
         // Apply partner branding (logo + background)
         var pc = result.partnerConfig || window._cachedPartnerConfig || null;
@@ -425,13 +427,21 @@ function renderResult(data, partnerConfig) {
     var rerecSection = document.getElementById('res_rerecommendSection');
     if (rerecSection) {
         var isAplColor = !currentPartnerConfig;
-        rerecSection.style.display = (discontinuedItemIds.length > 0 && isAplColor) ? '' : 'none';
-        var rerecBtn = document.getElementById('res_reRecommendBtn');
-        if (rerecBtn && !rerecBtn._bound) {
-            rerecBtn._bound = true;
-            rerecBtn.addEventListener('click', function () {
-                initiateReRecommendPayment();
-            });
+        var showRerec = (discontinuedItemIds.length > 0 && isAplColor);
+        rerecSection.style.display = showRerec ? '' : 'none';
+        if (showRerec) {
+            // 이미 재추천 결제를 한 고객은 버튼 대신 '대기 중' 안내를 보여준다 (단종 표시는 그대로 유지)
+            var isPending = (reRecommendStatus === 'pending');
+            var rerecBtn = document.getElementById('res_reRecommendBtn');
+            var pendingEl = document.getElementById('res_rerecommendPending');
+            if (rerecBtn) rerecBtn.style.display = isPending ? 'none' : '';
+            if (pendingEl) pendingEl.style.display = isPending ? '' : 'none';
+            if (rerecBtn && !rerecBtn._bound) {
+                rerecBtn._bound = true;
+                rerecBtn.addEventListener('click', function () {
+                    initiateReRecommendPayment();
+                });
+            }
         }
     }
     setSlider('res_nailSlider', 'res_nailBlock', resolveImgArray(cd.colorUsage ? cd.colorUsage.nail : null));
@@ -766,8 +776,12 @@ function initiateReRecommendPayment() {
                 body: JSON.stringify({ paymentId: paymentId, customerId: currentCustomerId, amount: PORTONE_CONFIG.AMOUNT })
             }).then(function(r) { return r.json(); }).then(function(data) {
                 if (data.success) {
-                    var sec = document.getElementById('res_rerecommendSection');
-                    if (sec) sec.style.display = 'none';
+                    // 결제 완료 → 섹션은 유지하되 버튼을 '재추천 대기 중' 안내로 전환 (단종 표시 유지)
+                    reRecommendStatus = 'pending';
+                    var rerecBtn2 = document.getElementById('res_reRecommendBtn');
+                    var pendingEl2 = document.getElementById('res_rerecommendPending');
+                    if (rerecBtn2) rerecBtn2.style.display = 'none';
+                    if (pendingEl2) pendingEl2.style.display = '';
                     alert(t('res_payment_success'));
                 } else {
                     alert(t('res_payment_verify_fail'));
