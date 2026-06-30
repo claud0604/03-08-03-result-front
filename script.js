@@ -3,7 +3,7 @@
 // ========== PortOne (결제) 설정 ==========
 var PORTONE_CONFIG = {
     STORE_ID: 'store-d5ff4cbf-4ebb-441c-bbc6-1eae30d8a950',
-    CHANNEL_KEY: 'channel-key-eedf93db-84d5-4fea-bcfd-fa29c70e1891', // 토스페이-테스트 채널
+    CHANNEL_KEY: 'channel-key-0ad67dd0-543f-41af-bc5e-604ae64e9457', // kg이니시스-테스트 채널 (심사용)
     AMOUNT: 2900
 };
 
