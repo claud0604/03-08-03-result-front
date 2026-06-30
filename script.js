@@ -434,8 +434,10 @@ function renderResult(data, partnerConfig) {
             var isPending = (reRecommendStatus === 'pending');
             var rerecBtn = document.getElementById('res_reRecommendBtn');
             var pendingEl = document.getElementById('res_rerecommendPending');
+            var descEl = document.getElementById('res_rerecommendDesc');
             if (rerecBtn) rerecBtn.style.display = isPending ? 'none' : '';
             if (pendingEl) pendingEl.style.display = isPending ? '' : 'none';
+            if (descEl) descEl.style.display = isPending ? 'none' : '';
             if (rerecBtn && !rerecBtn._bound) {
                 rerecBtn._bound = true;
                 rerecBtn.addEventListener('click', function () {
@@ -623,21 +625,25 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
             var brand = item.brand || '';
             var name = item.name || '';
             var isDiscontinued = item.catalogItemId && discontinuedItemIds.indexOf(String(item.catalogItemId)) !== -1;
-            // 재추천 결제 완료(pending) + 단종 카드 → 작업중 테두리/애니메이션
-            var rerecPendingCls = (isDiscontinued && reRecommendStatus === 'pending') ? ' rerec-pending' : '';
             var imgTag = imgUrl
                 ? '<img src="' + imgUrl + '" loading="lazy" onerror="this.style.display=\'none\'">'
                 : '<div class="prev-product-no-img"></div>';
-            return '<div class="prev-product-card' + (isDiscontinued ? ' discontinued' : '') + rerecPendingCls + '">' +
+            return '<div class="prev-product-card' + (isDiscontinued ? ' discontinued' : '') + '">' +
                 imgTag +
-                (isDiscontinued ? '<div class="prev-discontinued-overlay"><span>' + t('res_discontinued') + '</span>' +
-                    (rerecPendingCls ? '<span class="prev-rerec-working" data-i18n="res_rerecommend_working">새 추천 준비 중</span>' : '') + '</div>' : '') +
+                (isDiscontinued ? '<div class="prev-discontinued-overlay"><span>' + t('res_discontinued') + '</span></div>' : '') +
                 (brand || name ? '<div class="prev-product-info">' +
                     (brand ? '<span class="prev-product-brand">' + brand + '</span>' : '') +
                     (name ? '<span class="prev-product-name">' + name + '</span>' : '') +
                 '</div>' : '') +
             '</div>';
         }).join('');
+        // 이 카테고리에 단종 상품이 있고 재추천 결제 완료(pending)면 블록 전체에 작업중 테두리
+        if (block) {
+            var hasDisc = catalogItems.some(function (it) {
+                return it && it.catalogItemId && discontinuedItemIds.indexOf(String(it.catalogItemId)) !== -1;
+            });
+            block.classList.toggle('rerec-pending', hasDisc && reRecommendStatus === 'pending');
+        }
     } else if (fallbackUrls && fallbackUrls.length > 0) {
         if (block) block.style.display = '';
         slider.innerHTML = fallbackUrls.map(function(url) {
@@ -779,12 +785,18 @@ function initiateReRecommendPayment() {
                 body: JSON.stringify({ paymentId: paymentId, customerId: currentCustomerId, amount: PORTONE_CONFIG.AMOUNT })
             }).then(function(r) { return r.json(); }).then(function(data) {
                 if (data.success) {
-                    // 결제 완료 → 섹션은 유지하되 버튼을 '재추천 대기 중' 안내로 전환 (단종 표시 유지)
+                    // 결제 완료 → 버튼/단종안내 숨기고 '대기 중' 표시, 단종 블록에 작업중 테두리
                     reRecommendStatus = 'pending';
                     var rerecBtn2 = document.getElementById('res_reRecommendBtn');
                     var pendingEl2 = document.getElementById('res_rerecommendPending');
+                    var descEl2 = document.getElementById('res_rerecommendDesc');
                     if (rerecBtn2) rerecBtn2.style.display = 'none';
                     if (pendingEl2) pendingEl2.style.display = '';
+                    if (descEl2) descEl2.style.display = 'none';
+                    ['res_shadowProdBlock', 'res_lipProdBlock'].forEach(function (bid) {
+                        var b = document.getElementById(bid);
+                        if (b && b.querySelector('.prev-product-card.discontinued')) b.classList.add('rerec-pending');
+                    });
                     alert(t('res_payment_success'));
                 } else {
                     alert(t('res_payment_verify_fail'));

@@ -373,20 +373,13 @@ body {
 }
 .prev-rerecommend-pending::after { content: ''; animation: rerecDots 1.6s steps(1, end) infinite; }
 
-/* 단종 카드 — 재추천 결제 후(pending) 작업중 표시 */
-.prev-product-card.rerec-pending {
+/* 단종 상품이 있는 카테고리 블록(립/섀도) — 재추천 결제 후(pending) 작업중 테두리 */
+.prev-block.rerec-pending {
     border: 2px dashed var(--accent-color);
+    border-radius: 14px;
+    padding: 12px;
     animation: rerecCardPulse 1.8s ease-out infinite;
 }
-.prev-rerec-working {
-    display: block;
-    margin-top: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    color: #fff;
-}
-.prev-rerec-working::after { content: ''; animation: rerecDots 1.6s steps(1, end) infinite; }
 
 @keyframes rerecBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @keyframes rerecDots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
