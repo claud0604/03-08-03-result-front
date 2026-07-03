@@ -625,10 +625,11 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
             var brand = item.brand || '';
             var name = item.name || '';
             var isDiscontinued = item.catalogItemId && discontinuedItemIds.indexOf(String(item.catalogItemId)) !== -1;
+            var hasLinks = !isDiscontinued && item.purchaseLinks && item.purchaseLinks.length > 0;
             var imgTag = imgUrl
                 ? '<img src="' + imgUrl + '" loading="lazy" onerror="this.style.display=\'none\'">'
                 : '<div class="prev-product-no-img"></div>';
-            return '<div class="prev-product-card' + (isDiscontinued ? ' discontinued' : '') + '">' +
+            return '<div class="prev-product-card' + (isDiscontinued ? ' discontinued' : '') + (hasLinks ? ' has-links' : '') + '">' +
                 imgTag +
                 (isDiscontinued ? '<div class="prev-discontinued-overlay"><span>' + t('res_discontinued') + '</span></div>' : '') +
                 (brand || name ? '<div class="prev-product-info">' +
@@ -637,6 +638,16 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
                 '</div>' : '') +
             '</div>';
         }).join('');
+        // 링크 있는 카드 클릭 → 구매 링크 팝업 (저장된 스토어만큼 버튼 표시)
+        slider.querySelectorAll('.prev-product-card').forEach(function (card, idx) {
+            var item = catalogItems[idx];
+            var isDisc = item && item.catalogItemId && discontinuedItemIds.indexOf(String(item.catalogItemId)) !== -1;
+            if (!isDisc && item && item.purchaseLinks && item.purchaseLinks.length > 0) {
+                card.addEventListener('click', function () {
+                    openPurchaseLinkPopup(item);
+                });
+            }
+        });
         // 이 카테고리에 단종 상품이 있고 재추천 결제 완료(pending)면 블록 전체에 작업중 테두리
         if (block) {
             var hasDisc = catalogItems.some(function (it) {
@@ -652,6 +663,52 @@ function setProductSlider(sliderId, blockId, catalogItems, fallbackUrls) {
     } else {
         if (block) block.style.display = 'none';
     }
+}
+
+// ─── Purchase link popup (affiliate) ───
+var STORE_LABELS = {
+    coupang: '쿠팡',
+    oliveyoung: '올리브영',
+    musinsa: '무신사'
+};
+
+function openPurchaseLinkPopup(item) {
+    closePurchaseLinkPopup();
+    var links = (item.purchaseLinks || []).filter(function (l) { return l && l.url; });
+    if (!links.length) return;
+
+    var ov = document.createElement('div');
+    ov.id = 'purchaseLinkOverlay';
+    ov.className = 'purchase-link-overlay';
+    var nameLine = [item.brand, item.name].filter(Boolean).join(' ');
+    var btns = links.map(function (l) {
+        var label = STORE_LABELS[l.store] || l.store || 'Shop';
+        return '<button class="purchase-link-btn" data-url="' + l.url.replace(/"/g, '&quot;') + '">' +
+            '<span class="purchase-link-store">' + label + '</span>' +
+            '<span class="purchase-link-arrow">&rsaquo;</span>' +
+        '</button>';
+    }).join('');
+    ov.innerHTML =
+        '<div class="purchase-link-modal">' +
+            '<button class="purchase-link-close">&times;</button>' +
+            (nameLine ? '<p class="purchase-link-title">' + nameLine + '</p>' : '') +
+            '<div class="purchase-link-btns">' + btns + '</div>' +
+        '</div>';
+    document.body.appendChild(ov);
+
+    ov.addEventListener('click', function (e) { if (e.target === ov) closePurchaseLinkPopup(); });
+    ov.querySelector('.purchase-link-close').addEventListener('click', closePurchaseLinkPopup);
+    ov.querySelectorAll('.purchase-link-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            window.open(btn.getAttribute('data-url'), '_blank', 'noopener');
+            closePurchaseLinkPopup();
+        });
+    });
+}
+
+function closePurchaseLinkPopup() {
+    var ov = document.getElementById('purchaseLinkOverlay');
+    if (ov) ov.remove();
 }
 
 function setMuse(imgId, commentId, blockId, imgUrl, comment) {
