@@ -688,11 +688,17 @@ function openPurchaseLinkPopup(item) {
             '<span class="purchase-link-arrow">&rsaquo;</span>' +
         '</button>';
     }).join('');
+    // 쿠팡 파트너스 규정 고지 — 쿠팡 링크가 포함된 경우 필수 표기
+    var hasCoupang = links.some(function (l) { return l.store === 'coupang'; });
+    var notice = hasCoupang
+        ? '<p class="purchase-link-notice">* 이 링크는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>'
+        : '';
     ov.innerHTML =
         '<div class="purchase-link-modal">' +
             '<button class="purchase-link-close">&times;</button>' +
             (nameLine ? '<p class="purchase-link-title">' + nameLine + '</p>' : '') +
             '<div class="purchase-link-btns">' + btns + '</div>' +
+            notice +
         '</div>';
     document.body.appendChild(ov);
 

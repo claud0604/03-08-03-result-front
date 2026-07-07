@@ -343,6 +343,14 @@ body {
 }
 .purchase-link-btn:hover { background: var(--accent-color); color: #fff; }
 .purchase-link-arrow { font-size: 18px; line-height: 1; }
+.purchase-link-notice {
+    margin: 12px 0 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-dim);
+    text-align: center;
+    word-break: keep-all;
+}
 /* Discontinued product overlay (CSS only — original image untouched) */
 .prev-product-card.discontinued { position: relative; }
 .prev-product-card.discontinued > img { filter: blur(4px) grayscale(0.5); }
