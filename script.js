@@ -3,7 +3,7 @@
 // ========== PortOne (결제) 설정 ==========
 var PORTONE_CONFIG = {
     STORE_ID: 'store-d5ff4cbf-4ebb-441c-bbc6-1eae30d8a950',
-    CHANNEL_KEY: 'channel-key-0ad67dd0-543f-41af-bc5e-604ae64e9457', // kg이니시스-테스트 채널 (심사용)
+    CHANNEL_KEY: 'channel-key-618b1783-942d-42d2-9aa9-a5c0387fd51c', // KG이니시스 실연동 채널
     AMOUNT: 2900
 };
 
