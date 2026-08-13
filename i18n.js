@@ -583,6 +583,10 @@ function getCurrentLang() {
 function setLang(lang) {
     localStorage.setItem('apl-lang', lang);
     applyTranslations();
+    // 스타일 키워드는 동적 렌더 필드라 언어 바뀌면 다시 그려준다
+    if (typeof renderStyleKeywords === 'function' && typeof _lastStyleKeywords !== 'undefined' && _lastStyleKeywords) {
+        renderStyleKeywords(_lastStyleKeywords);
+    }
 }
 
 function t(key) {

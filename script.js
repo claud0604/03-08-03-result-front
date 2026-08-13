@@ -85,6 +85,7 @@ initTheme();
 document.addEventListener('DOMContentLoaded', function () {
     initScrollPosition();
     applyTranslations();
+    loadStyleKeywordCatalog();  // 스타일 키워드 id→라벨 카탈로그 미리 로드
 
     var urlParams = new URLSearchParams(window.location.search);
     currentCustomerId = urlParams.get('id');
@@ -297,6 +298,41 @@ function getEyebrowLabel(code) {
     var lang = getCurrentLang();
     var entry = EYEBROW_STYLE_LABELS[code];
     return entry ? (entry[lang] || entry.en) : code;
+}
+
+// ========== Style Keyword Label (kw_0006 → 로맨틱/Romantic/…) ==========
+// 스타일 키워드는 불변 id(kw_XXXX)로 저장된다. 카탈로그는 전문가 콘솔이 관리하는
+// app_settings/imageKeyword 에 있으므로 전문가 백엔드에서 받아 id→라벨로 변환한다.
+var STYLE_KW_MAP = null;          // { kw_0006: {ko,en,ja,zh}, ... }
+var _lastStyleKeywords = null;    // 카탈로그가 늦게 도착하면 다시 그리기 위해 보관
+var EXPERT_API_BASE = 'https://api-030802-expert.apls.kr';
+
+function styleKwLabel(id) {
+    if (STYLE_KW_MAP && STYLE_KW_MAP[id]) {
+        var e = STYLE_KW_MAP[id];
+        var lang = getCurrentLang();
+        return e[lang] || e.ko || e.en || id;
+    }
+    return id;  // 카탈로그 아직 없거나 미등록 id면 원본 그대로(최소한 안 깨짐)
+}
+
+function renderStyleKeywords(keywords) {
+    _lastStyleKeywords = keywords || [];
+    var labels = _lastStyleKeywords.map(styleKwLabel).filter(Boolean);
+    setText('res_styleKeyword', labels.join(', '));
+}
+
+function loadStyleKeywordCatalog() {
+    return fetch(EXPERT_API_BASE + '/api/app-settings/imageKeyword')
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+            var list = (j && j.data && j.data.keywords) || [];
+            STYLE_KW_MAP = {};
+            list.forEach(function (e) { if (e && e.id) STYLE_KW_MAP[e.id] = e; });
+            // 이미 렌더가 끝난 뒤 카탈로그가 도착했다면 키워드만 다시 그린다
+            if (_lastStyleKeywords) renderStyleKeywords(_lastStyleKeywords);
+        })
+        .catch(function (e) { console.warn('[styleKeyword] catalog load failed:', e); });
 }
 
 // ========== Image Making Completion Gauge ==========
@@ -517,7 +553,7 @@ function renderResult(data, partnerConfig) {
     setBestWorst('res_pantsBlock', 'res_bestPantsSlider', 'res_worstPantsSlider', 'res_pantsReason', resolveImgArray(ba.bestPants), resolveImgArray(ba.worstPants), ba.pantsComment);
 
     // Styling
-    setText('res_styleKeyword', st.keywords && st.keywords.length ? st.keywords.join(', ') : '');
+    renderStyleKeywords(st.keywords || []);
     var rec = st.recommendations || {};
     setSlider('res_outerSlider', 'res_outerBlock', resolveImgArray(rec.outerwear));
     setSlider('res_topSlider', 'res_topBlock', resolveImgArray(rec.tops));
