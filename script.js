@@ -96,8 +96,48 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         applyPartnerBranding(null); // APL default logo
         showLogin(false);
+        renderPublicPreview();  // 공개 추천상품 (쿠팡 파트너스 채널 검증용)
     }
 });
+
+// ===== 공개 추천상품 미리보기 =====
+// id 없이 접속하면 로그인 폼만 떠서 쿠팡 심사가 파트너스 링크를 확인할 수 없다.
+// 이 공개 섹션이 쿠팡 파트너스 링크가 게시된 상태를 노출해 채널 승인/실적 집계를 가능케 한다.
+var PUBLIC_SAMPLE_PRODUCTS = [
+    { name: "매트 립스틱 롱래스팅 워터프루프 고발색 립스틱",
+      image: "https://ads-partners.coupang.com/image1/2S_jM3voi2mqlp7c2XYRufmF7f-rrfUATc_n6yX9xRq4xnFoWYs3XR_CD23Alu66rlfNAsRaxYvqaELWVhqGLAKjSc9qUrn9zj3Ol91AgJUOZTcggkdVt-cFcJZJ-vrTsS0rIywkMg43f4SNsiTi68hXUuHz_fd9eCDBDTdBFPcjgZu1KJkyH_n4wXPjRwva-Cl5yuzWcDErKZI2n9rn6Sl8Kx1xgb1aZ-5c9Kj7iOoQzlEtqtj1hH_VcNtvJHsRfPfWIyAHzwMcZF-HDAo2fXvXAxlIwWzwRlhkUhyjuhOlR3CS8dkdA_cJ8grthSW2H8WT1wSn4OmS1VQOn_o4QOP8JeQc",
+      url: "https://link.coupang.com/re/AFFSDP?lptag=AF3354488&subid=03-08-04-update-mgmt&pageKey=9627991724&itemId=28755354324&vendorItemId=95694129468&traceid=V0-153-240f446228018a4d&requestid=20260824115643856095656618&token=31850C%7CGM" },
+    { name: "샵 한현재 마스터 핏 광채 쿠션 본품 (세미글로우 광채커버) 21호",
+      image: "https://ads-partners.coupang.com/image1/zrXoZL2LnNeJisdvzg-mb4jbB0jdRdJRf0kpyT9Pa-kaplQkaR_IVgEW_bZy21ZgyvD7GOf7MnYJC_wPjdqCe7QTev8mmCprp5Gg59t5W_V4C7axvea7D0ojU_TZ1iho5dZbGHMtjs9C4iQjg1pOfupE8W7gWNN4nLdUeQO0ywMEZwXi8pn3S5dK0Imx5O8l64yhf8SLl3VaG-FyeDdQ1xPXBYLWVLF7m_aLuaqGLiJ0minA6ti8nchNcAhW0h1iDmvGokhs9Ay2z4c075LtysA7GMoLmZvghm4BRWmY_HpB7ZubR1yXuH0KO7neIpaVeLqC5J-qSp0Xm1U=",
+      url: "https://link.coupang.com/re/AFFSDP?lptag=AF3354488&subid=03-08-04-update-mgmt&pageKey=8903639609&itemId=27030585855&vendorItemId=94000290639&traceid=V0-153-326af5295649280c&requestid=20260824115644422087907357&token=31850C%7CCMG" },
+    { name: "캘빈클라인뷰티 씨케이 비 오드뚜왈렛",
+      image: "https://ads-partners.coupang.com/image1/34u61UsyAHtgtwdJ3-Ga4NA2eayWin5Odf3Y9jYnLUhmtqmzMulk-jBG67LbnJlPJV0YIQ8iH2545rOnOCnpK4EABBpDsOT2YtIeVQnLnRiE8LqgVTRKGWxHACghkoBt7uNj52SjfhKbHybKdEY0vtfVJI4k6i-6sewBtDDmB5_GG2pVR-pHGdFrQ8A-iWXHoOPR5k_vVajirRaHudQVL0Yof5YtoiWPpPJvfXHcX2jbX8Gs07snAQRyn3sU0oQt_lU8TD8NgnBuJVXvi8N68ubXKwETVKyJwRK7siedE9sw_GDz08SxUZo-k_YSxBqL9oxrGQ==",
+      url: "https://link.coupang.com/re/AFFSDP?lptag=AF3354488&subid=03-08-04-update-mgmt&pageKey=7515522688&itemId=26528146977&vendorItemId=93660606312&traceid=V0-153-9a15a9c769c2e188&requestid=20260824115644844173853713&token=31850C%7CGM" },
+    { name: "은하수 빛나는 4색 아이섀도우 팔레트 (오로라 글리터)",
+      image: "https://ads-partners.coupang.com/image1/HnYKYh6OBvGZcm9AHsnYv0gxZ36XYvbQqovYa18UFpQwCgZkNEdLOrPe9IswWz6PmH12K1BBwGEyIurgyJ5fzpdeuNwcrt3z97AQIVsPNTzz-WgzLZ9rUfRvfBrI4dznqQjRE8bI3eT9ZJRZN7z0CGH0J8UWl9KDuhPLewvelQf5QveT0Yn6qnSgZeIIXlUdN8de9DoNGLJ4BFsnE-6mpZSvPbYoskWtcz3wLJzPpkkbducYC996qRy_86949FxhIlJv2HzY_Nh6B-dgLHA8Y7N4OqbNqvQcW1jZSSWsxiT2UnJzmTtHOYgF8n0f5JNQIQwDB2hewL8=",
+      url: "https://link.coupang.com/re/AFFSDP?lptag=AF3354488&subid=03-08-04-update-mgmt&pageKey=9320294778&itemId=27897488799&vendorItemId=94856369124&traceid=V0-153-cfd9283765ae92ac&requestid=20260824115645258071105972&token=31850C%7CCMG" }
+];
+
+function _escPublic(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+}
+
+function renderPublicPreview() {
+    var box = document.getElementById('publicProducts');
+    var wrap = document.getElementById('publicPreview');
+    if (!box || !wrap) return;
+    box.innerHTML = PUBLIC_SAMPLE_PRODUCTS.map(function (p) {
+        return '<a href="' + _escPublic(p.url) + '" target="_blank" rel="noopener nofollow sponsored" ' +
+            'style="display:block; border:1px solid #eee; border-radius:10px; overflow:hidden; text-decoration:none; color:inherit;">' +
+            '<img src="' + _escPublic(p.image) + '" loading="lazy" style="width:100%; aspect-ratio:1; object-fit:cover; display:block; background:#f5f5f5;">' +
+            '<span style="display:block; padding:8px 10px; font-size:13px; line-height:1.4; height:54px; overflow:hidden;">' + _escPublic(p.name) + '</span>' +
+            '<span style="display:block; padding:0 10px 10px; color:#ff5a5f; font-weight:700; font-size:13px;">쿠팡에서 보기 ›</span>' +
+        '</a>';
+    }).join('');
+    wrap.style.display = 'block';
+}
 
 // ========== Scroll Init ==========
 function initScrollPosition() {
