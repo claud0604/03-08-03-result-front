@@ -212,8 +212,15 @@ body {
     transition: all 0.2s; min-width: 50px;
 }
 .prev-chip-item.active { border-color: var(--accent-color); background: var(--bg-color); }
-/* 복수선택: 메인=실선, 서브=점선 */
+/* 복수선택: 메인=실선, 서브=점선 + '2' 배지 */
+.prev-chip-item { position: relative; }
 .prev-chip-item.chip-sub { border-style: dashed; opacity: 0.85; }
+.prev-chip-item.chip-sub::after {
+  content: '2'; position: absolute; top: -6px; right: -6px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent-color, #888); color: #fff; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
 /* 베스트 스커트 길이 표시 */
 .prev-skirt-lengths { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; justify-content: center; }
 .res-skirt-length-item { text-align: center; font-size: 13px; }
