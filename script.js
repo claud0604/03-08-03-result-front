@@ -546,8 +546,12 @@ function renderResult(data, partnerConfig) {
     setBestWorst('res_collarBlock', 'res_bestCollarSlider', 'res_worstCollarSlider', 'res_collarReason', resolveImgArray(ba.bestCollars), resolveImgArray(ba.worstCollars), ba.collarComment);
     setBestWorst('res_topsBlock', 'res_bestTopSlider', 'res_worstTopSlider', 'res_topsReason', resolveImgArray(ba.bestTops), resolveImgArray(ba.worstTops), ba.topsComment);
     // Skirt Length comment
+    renderResSkirtLengths(ba.bestSkirtLengths);
     setText('res_skirtLengthComment', ba.skirtLengthComment || '');
-    toggleBlock('res_skirtLengthBlock', !!ba.skirtLengthComment);
+    var hasSkirtLen = !!(ba.bestSkirtLengths && ba.bestSkirtLengths.length);
+    toggleBlock('res_skirtLengthCommentBox', !!ba.skirtLengthComment);
+    // 선택(길이/코멘트)이 하나도 없으면 블록 자체를 숨긴다
+    toggleBlock('res_skirtLengthBlock', !!ba.skirtLengthComment || hasSkirtLen);
 
     setBestWorst('res_skirtBlock', 'res_bestSkirtSlider', 'res_worstSkirtSlider', 'res_skirtReason', resolveImgArray(ba.bestSkirts), resolveImgArray(ba.worstSkirts), ba.skirtComment);
     setBestWorst('res_pantsBlock', 'res_bestPantsSlider', 'res_worstPantsSlider', 'res_pantsReason', resolveImgArray(ba.bestPants), resolveImgArray(ba.worstPants), ba.pantsComment);
@@ -594,6 +598,20 @@ function setChipActive(containerId, value) {
         item.classList.toggle('chip-main', v === mainV);
         item.classList.toggle('chip-sub', !!subV && v === subV);
     });
+}
+
+var SKIRT_LENGTH_LABELS = { maxi: 'Maxi', midi: 'Midi', knee: 'Knee', knee_above: 'Above Knee', mini: 'Mini' };
+var RES_SKIRT_LEN_IMG = 'https://cdn-r2.apls.kr/02-expert/41-skirt-lengths';
+function renderResSkirtLengths(codes) {
+    var box = document.getElementById('res_skirtLengthChips');
+    if (!box) return;
+    codes = codes || [];
+    if (!codes.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
+    box.style.display = '';
+    box.innerHTML = codes.map(function (c) {
+        var lbl = SKIRT_LENGTH_LABELS[c] || c;
+        return '<div class="res-skirt-length-item"><img src="' + RES_SKIRT_LEN_IMG + '/' + c + '.png" alt="' + lbl + '" onerror="this.style.display=\'none\'"><span>' + lbl + '</span></div>';
+    }).join('');
 }
 
 function setColorSwatches(id, colors) {

@@ -214,6 +214,10 @@ body {
 .prev-chip-item.active { border-color: var(--accent-color); background: var(--bg-color); }
 /* 복수선택: 메인=실선, 서브=점선 */
 .prev-chip-item.chip-sub { border-style: dashed; opacity: 0.85; }
+/* 베스트 스커트 길이 표시 */
+.prev-skirt-lengths { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; justify-content: center; }
+.res-skirt-length-item { text-align: center; font-size: 13px; }
+.res-skirt-length-item img { width: 80px; aspect-ratio: 3 / 4; object-fit: contain; display: block; margin: 0 auto 4px; }
 .prev-chip-swatch { width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.08); }
 .prev-chip-lbl { font-size: 10px; color: var(--secondary-color); }
 
