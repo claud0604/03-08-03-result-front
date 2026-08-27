@@ -581,11 +581,18 @@ function setPhoto(id, url, eager) {
     }
 }
 
+// 지표 값 하위호환: 문자열(레거시 단일) 또는 {main, sub}(복수선택)
+function _indMain(v) { return (v && typeof v === 'object') ? (v.main || '') : (v || ''); }
+function _indSub(v) { return (v && typeof v === 'object') ? (v.sub || '') : ''; }
 function setChipActive(containerId, value) {
     var el = document.getElementById(containerId);
     if (!el) return;
+    var mainV = _indMain(value), subV = _indSub(value);
     el.querySelectorAll('.prev-chip-item').forEach(function(item) {
-        item.classList.toggle('active', item.getAttribute('data-value') === value);
+        var v = item.getAttribute('data-value');
+        item.classList.toggle('active', v === mainV || (!!subV && v === subV));
+        item.classList.toggle('chip-main', v === mainV);
+        item.classList.toggle('chip-sub', !!subV && v === subV);
     });
 }
 

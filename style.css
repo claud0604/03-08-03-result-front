@@ -212,6 +212,8 @@ body {
     transition: all 0.2s; min-width: 50px;
 }
 .prev-chip-item.active { border-color: var(--accent-color); background: var(--bg-color); }
+/* 복수선택: 메인=실선, 서브=점선 */
+.prev-chip-item.chip-sub { border-style: dashed; opacity: 0.85; }
 .prev-chip-swatch { width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.08); }
 .prev-chip-lbl { font-size: 10px; color: var(--secondary-color); }
 
